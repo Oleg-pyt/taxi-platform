@@ -1,0 +1,184 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Taxi Service API",
+    "version": "1.0.0",
+    "description": "API contract for Rider, Driver, Ride, Payment"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080/api",
+      "description": "Local development server"
+    }
+  ],
+  "paths": {
+    "/riders": {
+      "get": {
+        "summary": "Get all riders",
+        "operationId": "getRiders",
+        "responses": {
+          "200": {
+            "description": "List of riders",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Rider" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new rider",
+        "operationId": "createRider",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/Rider" } }
+          }
+        },
+        "responses": {
+          "201": { "description": "Rider created" }
+        }
+      }
+    },
+    "/drivers": {
+      "get": {
+        "summary": "Get all drivers",
+        "operationId": "getDrivers",
+        "responses": {
+          "200": {
+            "description": "List of drivers",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Driver" } }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new driver",
+        "operationId": "createDriver",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/Driver" } }
+          }
+        },
+        "responses": { "201": { "description": "Driver created" } }
+      }
+    },
+    "/rides": {
+      "get": {
+        "summary": "Get all rides",
+        "operationId": "getRides",
+        "responses": {
+          "200": {
+            "description": "List of rides",
+            "content": {
+              "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Ride" } } }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new ride",
+        "operationId": "createRide",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/Ride" } }
+          }
+        },
+        "responses": { "201": { "description": "Ride created" } }
+      }
+    },
+    "/payments": {
+      "get": {
+        "summary": "Get all payments",
+        "operationId": "getPayments",
+        "responses": {
+          "200": {
+            "description": "List of payments",
+            "content": {
+              "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Payment" } } }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new payment",
+        "operationId": "createPayment",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/Payment" } }
+          }
+        },
+        "responses": { "201": { "description": "Payment created" } }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Rider": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "name": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "rating": { "type": "number", "format": "double" },
+          "createdAt": { "type": "string", "format": "date-time" }
+        },
+        "required": ["name", "email"]
+      },
+      "Driver": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "name": { "type": "string" },
+          "status": { "type": "string", "enum": ["OFFLINE", "ONLINE", "BUSY"] },
+          "currentLatitude": { "type": "number", "format": "double" },
+          "currentLongitude": { "type": "number", "format": "double" },
+          "rating": { "type": "number", "format": "double" },
+          "createdAt": { "type": "string", "format": "date-time" }
+        },
+        "required": ["name", "status"]
+      },
+      "Ride": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "riderId": { "type": "integer", "format": "int64" },
+          "driverId": { "type": "integer", "format": "int64" },
+          "status": { "type": "string", "enum": ["CREATED","OFFERED","ACCEPTED","IN_PROGRESS","COMPLETED","CANCELLED","EXPIRED"] },
+          "pickupLat": { "type": "number", "format": "double" },
+          "pickupLng": { "type": "number", "format": "double" },
+          "dropoffLat": { "type": "number", "format": "double" },
+          "dropoffLng": { "type": "number", "format": "double" },
+          "estimatedPrice": { "type": "number", "format": "double" },
+          "finalPrice": { "type": "number", "format": "double" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "assignedAt": { "type": "string", "format": "date-time" },
+          "completedAt": { "type": "string", "format": "date-time" },
+          "version": { "type": "integer", "format": "int64" }
+        },
+        "required": ["riderId", "status", "pickupLat", "pickupLng"]
+      },
+      "Payment": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "rideId": { "type": "integer", "format": "int64" },
+          "amount": { "type": "number", "format": "double" },
+          "status": { "type": "string", "enum": ["PENDING","COMPLETED","FAILED","REFUNDED"] },
+          "createdAt": { "type": "string", "format": "date-time" }
+        },
+        "required": ["rideId", "amount", "status"]
+      }
+    }
+  }
+}
