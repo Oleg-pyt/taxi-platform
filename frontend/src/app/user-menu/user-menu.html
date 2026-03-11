@@ -1,0 +1,115 @@
+<div class="user-menu">
+  <!-- Кнопка меню -->
+  <button class="menu-button" (click)="toggleMenu()" [class.active]="isOpen">
+    <div class="user-avatar" *ngIf="isAuthenticated && user">
+      <span>{{ getInitials() }}</span>
+    </div>
+    <div class="menu-icon" *ngIf="!isAuthenticated">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 12h18M3 6h18M3 18h18"/>
+      </svg>
+    </div>
+  </button>
+
+  <!-- Popup меню -->
+  <div class="menu-overlay" *ngIf="isOpen" (click)="closeMenu()"></div>
+  <div class="menu-panel" [class.open]="isOpen">
+    <!-- Профіль користувача -->
+    <div class="menu-header" *ngIf="isAuthenticated && user">
+      <div class="user-avatar large">
+        <span>{{ getInitials() }}</span>
+      </div>
+      <div class="user-info">
+        <h3>{{ user.name }}</h3>
+        <p>{{ user.email }}</p>
+      </div>
+    </div>
+
+    <!-- Не авторизований -->
+    <div class="menu-header guest" *ngIf="!isAuthenticated">
+      <h3>Вітаємо!</h3>
+      <p>Увійдіть для доступу до всіх функцій</p>
+    </div>
+
+    <div class="menu-divider"></div>
+
+    <!-- Меню для неавторизованих -->
+    <div class="menu-items" *ngIf="!isAuthenticated">
+      <button class="menu-item" (click)="goToLogin()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M13.8 12H3"/>
+        </svg>
+        <span>Увійти</span>
+      </button>
+      <button class="menu-item" (click)="goToRegister()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="8.5" cy="7" r="4"/>
+          <line x1="20" y1="8" x2="20" y2="14"/>
+          <line x1="23" y1="11" x2="17" y2="11"/>
+        </svg>
+        <span>Зареєструватися</span>
+      </button>
+    </div>
+
+    <!-- Меню для авторизованих -->
+    <div class="menu-items" *ngIf="isAuthenticated">
+      <!-- Панель водія -->
+      <button class="menu-item" *ngIf="isDriver" (click)="goToDriverPanel()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+          <circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+        </svg>
+        <span>Панель водія</span>
+      </button>
+
+      <!-- Панель адміна -->
+      <button class="menu-item admin" *ngIf="isAdmin" (click)="goToAdminPanel()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        <span>Адмін панель</span>
+      </button>
+
+      <!-- Стати водієм -->
+      <button class="menu-item" *ngIf="canApplyForDriver" (click)="goToDriverApplication()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>
+        <span>Стати водієм</span>
+      </button>
+
+      <!-- Очікування схвалення -->
+      <div class="menu-item pending" *ngIf="isAwaitingDriverApproval">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+        </svg>
+        <span>Заявка на розгляді</span>
+      </div>
+
+      <button class="menu-item" (click)="openRideHistoryDialog()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+        </svg>
+        <span>Історія поїздок</span>
+      </button>
+
+      <button class="menu-item" (click)="openProfileDialog()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+        </svg>
+        <span>{{ isDriver ? 'Профіль водія' : 'Профіль' }}</span>
+      </button>
+
+      <div class="menu-divider"></div>
+
+      <button class="menu-item logout" (click)="logout()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
+        </svg>
+        <span>Вийти</span>
+      </button>
+    </div>
+  </div>
+</div>

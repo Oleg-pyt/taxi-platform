@@ -1,0 +1,417 @@
+.map-container-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+
+  .map-container {
+    width: 100%;
+    height: 100%;
+  }
+
+  .login-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 100;
+    background: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    color: #667eea;
+    transition: all 0.3s ease;
+
+    &:hover {
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+      transform: translateY(-2px);
+    }
+
+    svg {
+      color: #667eea;
+    }
+  }
+
+  .ride-draft-btn {
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    transform: translateX(-50%);
+    z-index: 450;
+    border: none;
+    border-radius: 999px;
+    padding: 12px 18px;
+    background: linear-gradient(135deg, #1f6feb 0%, #3b82f6 100%);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 12px 24px rgba(31, 111, 235, 0.28);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+      transform: translateX(-50%) translateY(-1px);
+      box-shadow: 0 14px 28px rgba(31, 111, 235, 0.32);
+    }
+  }
+
+  .active-ride-status {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    background: white;
+    border-radius: 12px;
+    padding: 15px 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    min-width: 300px;
+
+    .status-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 10px;
+
+      .status-icon {
+        position: relative;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: #e3f2fd;
+        color: #2196f3;
+
+        &[data-status="CREATED"],
+        &[data-status="OFFERED"] {
+          background: #fff3e0;
+          color: #ff9800;
+        }
+
+        &[data-status="ACCEPTED"] {
+          background: #fff3cd;
+          color: #ff9800;
+        }
+
+        &[data-status="IN_PROGRESS"] {
+          background: #d4edda;
+          color: #4caf50;
+        }
+
+        .pulse {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          border-radius: 50%;
+          background: currentColor;
+          opacity: 0.3;
+          animation: pulse 2s infinite;
+        }
+      }
+
+      .status-text {
+        flex: 1;
+
+        h3 {
+          margin: 0;
+          font-size: 16px;
+          color: #333;
+        }
+
+        p {
+          margin: 5px 0 0 0;
+          font-size: 14px;
+          color: #666;
+        }
+      }
+    }
+
+    .cancel-ride-btn {
+      width: 100%;
+      padding: 10px;
+      background: #f44336;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease;
+
+      &:hover {
+        background: #da190b;
+      }
+    }
+  }
+
+  .bottom-sheet {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    width: min(92vw, 440px);
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.2);
+    transform: translateY(20px);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.28s ease, opacity 0.2s ease;
+    z-index: 500;
+    max-height: min(72vh, 680px);
+    overflow-y: auto;
+
+    &.open {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .bottom-sheet-header {
+      padding: 20px;
+      border-bottom: 1px solid #f0f0f0;
+      position: relative;
+      text-align: center;
+
+      .drag-handle {
+        width: 40px;
+        height: 4px;
+        background: #ddd;
+        border-radius: 2px;
+        margin: 0 auto 15px;
+      }
+
+      h2 {
+        margin: 0;
+        font-size: 20px;
+        color: #333;
+      }
+
+      .close-btn {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: none;
+        border: none;
+        font-size: 24px;
+        color: #999;
+        cursor: pointer;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:hover {
+          color: #333;
+        }
+      }
+    }
+
+    .bottom-sheet-content {
+      padding: 20px;
+
+      .ride-form {
+        .form-group {
+          margin-bottom: 20px;
+
+          label {
+            display: block;
+            margin-bottom: 8px;
+            color: #666;
+            font-weight: 500;
+          }
+
+          .input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+            cursor: pointer;
+            transition: all 0.3s ease;
+
+            &:hover {
+              border-color: #667eea;
+              background: white;
+            }
+
+            svg {
+              flex-shrink: 0;
+            }
+
+            input {
+              flex: 1;
+              border: none;
+              background: none;
+              font-size: 16px;
+              color: #333;
+              cursor: pointer;
+              outline: none;
+
+              &::placeholder {
+                color: #999;
+              }
+            }
+          }
+        }
+
+        .ride-info {
+          display: flex;
+          gap: 15px;
+          padding: 15px;
+          background: #f5f5f5;
+          border-radius: 8px;
+          margin-bottom: 20px;
+
+          .info-item {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #666;
+
+            svg {
+              color: #999;
+            }
+
+            &.price {
+              color: #4caf50;
+              font-weight: 700;
+              font-size: 18px;
+            }
+          }
+        }
+
+        .selection-info {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 12px;
+          background: #e3f2fd;
+          border-radius: 8px;
+          color: #1976d2;
+          margin-bottom: 20px;
+
+          svg {
+            flex-shrink: 0;
+          }
+        }
+
+        .error-message {
+          padding: 12px;
+          background: #ffebee;
+          color: #c62828;
+          border-radius: 8px;
+          margin-bottom: 20px;
+        }
+
+        .form-actions {
+          display: flex;
+          gap: 10px;
+
+          .btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+
+            &:disabled {
+              opacity: 0.6;
+              cursor: not-allowed;
+            }
+
+            &.btn-primary {
+              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+              color: white;
+
+              &:hover:not(:disabled) {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+              }
+            }
+
+            &.btn-secondary {
+              background: #f5f5f5;
+              color: #333;
+
+              &:hover:not(:disabled) {
+                background: #e0e0e0;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0;
+  }
+}
+
+// Custom marker styles
+::ng-deep {
+  .user-marker {
+    cursor: pointer;
+  }
+
+  .pickup-marker,
+  .dropoff-marker {
+    cursor: pointer;
+  }
+}
+
+// Mobile styles
+@media (max-width: 768px) {
+  .map-container-wrapper {
+    .bottom-sheet {
+      right: 10px;
+      left: 10px;
+      width: auto;
+      bottom: 10px;
+      max-height: 80vh;
+      border-radius: 16px;
+    }
+
+    .login-btn {
+      top: 10px;
+      right: 10px;
+      padding: 10px 20px;
+      font-size: 14px;
+    }
+
+    .ride-draft-btn {
+      bottom: 14px;
+      width: calc(100% - 24px);
+      max-width: 360px;
+      font-size: 14px;
+      padding: 11px 14px;
+    }
+
+    .active-ride-status {
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      transform: none;
+      min-width: auto;
+    }
+  }
+}

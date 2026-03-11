@@ -1,0 +1,25 @@
+<h2>Taxi Dashboard</h2>
+<p-button label="New Ride" icon="pi pi-plus" (click)="showDialog = true"></p-button>
+
+<p-table [value]="rides" [paginator]="true" [rows]="5">
+    <ng-template pTemplate="header">
+        <tr>
+            <th>Passenger</th>
+            <th>Driver</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Status</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-ride>
+        <tr>
+            <td>{{ ride.passenger }}</td>
+            <td>{{ ride.driver }}</td>
+            <td>{{ ride.from }}</td>
+            <td>{{ ride.to }}</td>
+            <td>{{ ride.status }}</td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<app-new-ride-dialog [(visible)]="showDialog" (save)="addRide($event)"></app-new-ride-dialog>

@@ -18,14 +18,19 @@ services:
     container_name: api
     command: ["echo", "api built"]
     volumes:
-      - ~/.m2:/root/.m2  # опційно, щоб підхопити локальні залежності Maven
+      - m2-repo:/root/.m2
 
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+      additional_contexts:
+        api: "service:api"
     container_name: taxi-backend
     ports:
       - "8080:8080"
     env_file: .env
+    volumes:
+      - m2-repo:/root/.m2
     depends_on:
       api:
         condition: service_completed_successfully
@@ -34,13 +39,19 @@ services:
     restart: unless-stopped
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      additional_contexts:
+        api: "service:api"
     container_name: taxi-frontend
     ports:
       - "3000:80"
+    volumes:
+      - m2-repo:/root/.m2
     restart: unless-stopped
     depends_on:
       - backend
 
 volumes:
   postgres-data:
+  m2-repo:

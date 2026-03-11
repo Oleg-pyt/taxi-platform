@@ -1,1 +1,62 @@
 /* You can add global styles to this file, and also import other style files */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+// Mapbox GL styles (CSS imports are still supported in Dart Sass)
+@import "mapbox-gl/dist/mapbox-gl.css";
+
+// Custom global styles
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+.p-dialog.auth-dialog .p-dialog-content {
+  overflow-y: hidden !important;
+  padding: 0 !important;
+  background: transparent !important;
+}
+
+.p-dialog.auth-dialog {
+  max-height: none;
+  border: none;
+  box-shadow: none !important;
+  background: transparent !important;
+  overflow: visible;
+}
+
+.p-dialog-mask.auth-dialog-mask {
+  background: rgba(2, 8, 23, 0.72) !important;
+  backdrop-filter: blur(2px);
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: none !important;
+}
+
+@media (max-width: 768px) {
+  .p-dialog.auth-dialog {
+    width: calc(100vw - 16px) !important;
+  }
+}

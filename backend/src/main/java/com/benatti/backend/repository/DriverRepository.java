@@ -2,5 +2,9 @@ package com.benatti.backend.repository;
 
 import com.benatti.backend.entity.DriverEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface DriverRepository extends JpaRepository<DriverEntity, Long> {}
+import java.util.UUID;
+
+@Repository
+public interface DriverRepository extends JpaRepository<DriverEntity, UUID> {}

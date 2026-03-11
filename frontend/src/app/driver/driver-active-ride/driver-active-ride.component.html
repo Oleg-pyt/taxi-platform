@@ -1,0 +1,128 @@
+<div class="driver-active-ride">
+  <!-- Карта -->
+  <div class="map-container">
+    <div #mapContainer class="map"></div>
+
+    <!-- Информационная панель -->
+    <div class="info-header">
+      <div class="header-left">
+        <button class="back-btn" (click)="goBack()" title="Назад">←</button>
+        <div class="ride-status">
+          <span class="status-badge" [class]="'status-' + currentStatus">
+            {{ currentStatus === 'assigned' ? '🛣️ Їдемо до пасажира' : 
+               currentStatus === 'arrived' ? '⏹️ Прибули' :
+               currentStatus === 'in_progress' ? '🚗 В дорозі' : '✅ Завершено' }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Тайме-лайн прогресса -->
+    <div class="progress-timeline">
+      <div 
+        class="timeline-step"
+        *ngFor="let step of statusSteps"
+        [class.active]="currentStatus === step.value"
+        [class.completed]="statusSteps.indexOf(step) < statusSteps.indexOf(statusSteps.find(s => s.value === currentStatus) || statusSteps[0])"
+      >
+        <div class="step-dot"></div>
+        <div class="step-label">{{ step.label }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Информационная панель справа -->
+  <div class="ride-container">
+    <!-- Информация о пассажире -->
+    <div class="passenger-card">
+      <div class="card-header">
+        <div class="passenger-name">{{ ride?.passengerName || 'Пасажир' }}</div>
+        <div class="passenger-rating">⭐ {{ (ride?.passengerRating || 0).toFixed(1) }}</div>
+      </div>
+      <div class="passenger-phone">
+        📞 {{ ride?.passengerPhone || '+38 (___) ___-__-__' }}
+      </div>
+    </div>
+
+    <!-- Ошибка -->
+    <div class="error-message" *ngIf="error">
+      ⚠️ {{ error }}
+    </div>
+
+    <!-- Маршрут-->
+    <div class="route-info">
+      <div class="route-section">
+        <div class="route-header">
+          <span class="icon">📍</span>
+          <span class="label">Забрати пасажира</span>
+          <span class="time" *ngIf="estimatedPickupTime">{{ estimatedPickupTime }} хв</span>
+        </div>
+        <div class="route-address">{{ ride?.pickupAddress || 'Невідомо' }}</div>
+      </div>
+
+      <div class="route-divider">
+        <div class="line"></div>
+        <div class="icon">↓</div>
+      </div>
+
+      <div class="route-section">
+        <div class="route-header">
+          <span class="icon">🎯</span>
+          <span class="label">Пункт призначення</span>
+          <span class="time" *ngIf="estimatedDropoffTime">{{ estimatedDropoffTime }} хв</span>
+        </div>
+        <div class="route-address">{{ ride?.dropoffAddress || 'Невідомо' }}</div>
+      </div>
+    </div>
+
+    <!-- Информация о цене -->
+    <div class="fare-info">
+      <div class="fare-row">
+        <span class="label">Примерная сумма:</span>
+        <span class="amount">{{ ride?.estimatedPrice || '0' }} ₴</span>
+      </div>
+      <div class="fare-row">
+        <span class="label">Расстояние:</span>
+        <span class="amount">{{ (ride?.distance || 0).toFixed(1) }} км</span>
+      </div>
+    </div>
+
+    <!-- Кнопки управления -->
+    <div class="action-buttons">
+      <!-- Кнопка обновления статуса -->
+      <button 
+        class="primary-btn"
+        (click)="updateStatus(getNextStatus())"
+        [disabled]="loading || !canAdvanceStatus()"
+        *ngIf="currentStatus !== 'completed'"
+      >
+        {{ getNextStatusLabel() }}
+      </button>
+
+      <!-- Кнопка отмены -->
+      <button 
+        class="secondary-btn"
+        (click)="cancelRide()"
+        [disabled]="loading || currentStatus !== 'assigned' && currentStatus !== 'arrived'"
+        *ngIf="currentStatus === 'assigned' || currentStatus === 'arrived'"
+      >
+        ✕ Скасувати
+      </button>
+
+      <!-- Кнопка завершения (если завершено) -->
+      <button 
+        class="success-btn"
+        (click)="goBack()"
+        *ngIf="currentStatus === 'completed'"
+      >
+        ✓ Готово
+      </button>
+    </div>
+
+    <!-- Загрузка -->
+    <div class="loading-indicator" *ngIf="loading">
+      <div class="spinner"></div>
+      <p>Обновление...</p>
+    </div>
+  </div>
+</div>

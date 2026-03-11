@@ -1,0 +1,171 @@
+<div class="admin-panel">
+  <app-user-menu></app-user-menu>
+
+  <div class="panel-container">
+    <div class="panel-header">
+      <h1>Адмін панель</h1>
+    </div>
+
+    <div class="tabs">
+      <button 
+        class="tab" 
+        [class.active]="activeTab === 'applications'" 
+        (click)="changeTab('applications')">
+        Заявки водіїв
+      </button>
+      <button 
+        class="tab" 
+        [class.active]="activeTab === 'users'" 
+        (click)="changeTab('users')">
+        Користувачі
+      </button>
+      <button 
+        class="tab" 
+        [class.active]="activeTab === 'stats'" 
+        (click)="changeTab('stats')">
+        Статистика
+      </button>
+    </div>
+
+    <div class="alert alert-error" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </div>
+
+    <div class="loading" *ngIf="loading">Завантаження...</div>
+
+    <!-- Заявки водіїв -->
+    <div *ngIf="activeTab === 'applications' && !loading">
+      <div class="applications-list">
+        <div class="application-card" *ngFor="let app of driverApplications">
+          <div class="card-header">
+            <h3>{{ app.firstName }} {{ app.lastName }}</h3>
+            <span class="status" [attr.data-status]="app.status">
+              {{ getStatusText(app.status) }}
+            </span>
+          </div>
+
+          <div class="card-body">
+            <div class="info-row">
+              <span class="label">Телефон:</span>
+              <span>{{ app.phone }}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">Посвідчення:</span>
+              <span>{{ app.licenseNumber }}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">Автомобіль:</span>
+              <span>{{ app.carModel }} ({{ app.carYear }})</span>
+            </div>
+            <div class="info-row">
+              <span class="label">Номер:</span>
+              <span>{{ app.carPlate }}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">Колір:</span>
+              <span>{{ app.carColor }}</span>
+            </div>
+          </div>
+
+          <div class="card-actions" *ngIf="app.status === 'PENDING'">
+            <button class="btn btn-success" (click)="approveApplication(app.id)">
+              Схвалити
+            </button>
+            <button class="btn btn-danger" (click)="rejectApplication(app.id)">
+              Відхилити
+            </button>
+          </div>
+        </div>
+
+        <div class="empty-state" *ngIf="driverApplications.length === 0">
+          <p>Немає заявок</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Користувачі -->
+    <div *ngIf="activeTab === 'users' && !loading">
+      <div class="users-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Ім'я</th>
+              <th>Email</th>
+              <th>Ролі</th>
+              <th>Дії</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of users">
+              <td>{{ user.name }}</td>
+              <td>{{ user.email }}</td>
+              <td>
+                <span class="role-badge" *ngFor="let role of user.roles">
+                  {{ role }}
+                </span>
+              </td>
+              <td>
+                <button class="btn btn-small btn-danger" (click)="blockUser(user.id)">
+                  Заблокувати
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="empty-state" *ngIf="users.length === 0">
+          <p>Немає користувачів</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Статистика -->
+    <div *ngIf="activeTab === 'stats' && !loading && stats">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+            </svg>
+          </div>
+          <div class="stat-value">{{ stats.totalRides }}</div>
+          <div class="stat-label">Всього поїздок</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon active">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="1" y="3" width="15" height="13"/>
+              <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+              <circle cx="5.5" cy="18.5" r="2.5"/>
+              <circle cx="18.5" cy="18.5" r="2.5"/>
+            </svg>
+          </div>
+          <div class="stat-value">{{ stats.activeRides }}</div>
+          <div class="stat-label">Активні поїздки</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon success">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+          <div class="stat-value">{{ stats.completedRides }}</div>
+          <div class="stat-label">Завершені</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon revenue">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="1" x2="12" y2="23"/>
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+            </svg>
+          </div>
+          <div class="stat-value">{{ stats.totalRevenue }} грн</div>
+          <div class="stat-label">Загальний дохід</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

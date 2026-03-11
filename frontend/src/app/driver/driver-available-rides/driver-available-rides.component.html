@@ -1,0 +1,116 @@
+<div class="driver-available-rides">
+  <!-- Карта -->
+  <div class="map-container">
+    <div #mapContainer class="map"></div>
+  </div>
+
+  <!-- Бокова панель -->
+  <div class="rides-panel">
+    <div class="panel-header">
+      <h2>🚕 Доступні замовлення</h2>
+      <button class="refresh-btn" (click)="refreshRides()" [disabled]="loading" title="Оновити">
+        🔄
+      </button>
+    </div>
+
+    <!-- Контроли фільтрації -->
+    <div class="filter-controls">
+      <div class="filter-group">
+        <label>Сортувати:</label>
+        <select (change)="onSortChange($event)" [value]="sortBy">
+          <option value="distance">За дистанцією</option>
+          <option value="price">За ціною</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Мінімальний рейтинг:</label>
+        <select (change)="onFilterChange($event)" [value]="filterMinRating">
+          <option value="0">Усі</option>
+          <option value="3">3+</option>
+          <option value="4">4+</option>
+          <option value="4.5">4.5+</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Помилка -->
+    <div class="error-message" *ngIf="error">
+      ⚠️ {{ error }}
+    </div>
+
+    <!-- Завантаження -->
+    <div class="loading-state" *ngIf="loading">
+      <div class="spinner"></div>
+      <p>Завантаження замовлень...</p>
+    </div>
+
+    <!-- Список замовлень -->
+    <div class="rides-list" *ngIf="!loading && filteredRides.length > 0">
+      <div 
+        class="ride-card" 
+        *ngFor="let ride of filteredRides" 
+        [class.selected]="selectedRideId === ride.id"
+        (click)="selectRide(ride.id)"
+      >
+        <div class="ride-header">
+          <div class="passenger-info">
+            <span class="passenger-name">{{ ride.passengerName }}</span>
+            <span class="passenger-rating">
+              ⭐ {{ ride.passengerRating.toFixed(1) }}
+            </span>
+          </div>
+        </div>
+
+        <div class="ride-route">
+          <div class="route-point from">
+            <span class="marker">📍</span>
+            <span class="address">{{ ride.pickupAddress | slice: 0: 25 }}...</span>
+          </div>
+          <div class="route-arrow">↓</div>
+          <div class="route-point to">
+            <span class="marker">🎯</span>
+            <span class="address">{{ ride.dropoffAddress | slice: 0: 25 }}...</span>
+          </div>
+        </div>
+
+        <div class="ride-details">
+          <div class="detail">
+            <span class="label">Дистанція:</span>
+            <span class="value">{{ ride.distance.toFixed(1) }} км</span>
+          </div>
+          <div class="detail">
+            <span class="label">Час:</span>
+            <span class="value">~{{ ride.estimatedDuration }} хв</span>
+          </div>
+          <div class="detail price">
+            <span class="label">Ціна:</span>
+            <span class="value">{{ ride.estimatedPrice }} ₴</span>
+          </div>
+        </div>
+
+        <button 
+          class="accept-btn" 
+          (click)="acceptRide(ride); $event.stopPropagation()"
+          [disabled]="loading"
+        >
+          ✓ Прийняти
+        </button>
+      </div>
+    </div>
+
+    <!-- Пусто -->
+    <div class="empty-state" *ngIf="!loading && filteredRides.length === 0">
+      <div class="empty-icon">📭</div>
+      <p>Немає доступних замовлень в вашому районі</p>
+      <button class="refresh-btn" (click)="refreshRides()" [disabled]="loading">
+        Спробувати ще раз
+      </button>
+    </div>
+
+    <!-- Кнопка назад -->
+    <div class="panel-footer">
+      <button class="back-btn" (click)="goBack()">← Назад</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,151 @@
+<div class="driver-application">
+  <div class="application-container">
+    <div class="application-header">
+      <h1>Стати водієм</h1>
+      <p>Заповніть форму щоб подати заявку на роботу водієм</p>
+    </div>
+
+    <div class="alert alert-success" *ngIf="successMessage">
+      {{ successMessage }}
+    </div>
+
+    <div class="alert alert-error" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </div>
+
+    <form [formGroup]="applicationForm" (ngSubmit)="onSubmit()" class="application-form">
+      <div class="form-section">
+        <h2>Особисті дані</h2>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="firstName">Ім'я *</label>
+            <input 
+              type="text" 
+              id="firstName" 
+              formControlName="firstName"
+              [class.invalid]="submitted && f['firstName'].errors"
+            />
+            <div class="error-message" *ngIf="submitted && f['firstName'].errors">
+              Введіть ім'я
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="lastName">Прізвище *</label>
+            <input 
+              type="text" 
+              id="lastName" 
+              formControlName="lastName"
+              [class.invalid]="submitted && f['lastName'].errors"
+            />
+            <div class="error-message" *ngIf="submitted && f['lastName'].errors">
+              Введіть прізвище
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Телефон *</label>
+          <input 
+            type="tel" 
+            id="phone" 
+            formControlName="phone"
+            placeholder="+380XXXXXXXXX"
+            [class.invalid]="submitted && f['phone'].errors"
+          />
+          <div class="error-message" *ngIf="submitted && f['phone'].errors">
+            Введіть коректний номер телефону
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="licenseNumber">Номер водійського посвідчення *</label>
+          <input 
+            type="text" 
+            id="licenseNumber" 
+            formControlName="licenseNumber"
+            [class.invalid]="submitted && f['licenseNumber'].errors"
+          />
+          <div class="error-message" *ngIf="submitted && f['licenseNumber'].errors">
+            Введіть номер посвідчення
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h2>Інформація про автомобіль</h2>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="carModel">Модель авто *</label>
+            <input 
+              type="text" 
+              id="carModel" 
+              formControlName="carModel"
+              placeholder="Toyota Camry"
+              [class.invalid]="submitted && f['carModel'].errors"
+            />
+            <div class="error-message" *ngIf="submitted && f['carModel'].errors">
+              Введіть модель авто
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="carYear">Рік випуску *</label>
+            <input 
+              type="number" 
+              id="carYear" 
+              formControlName="carYear"
+              placeholder="2020"
+              [class.invalid]="submitted && f['carYear'].errors"
+            />
+            <div class="error-message" *ngIf="submitted && f['carYear'].errors">
+              Введіть рік випуску (1990-{{ currentYear }})
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="carPlate">Номерний знак *</label>
+            <input 
+              type="text" 
+              id="carPlate" 
+              formControlName="carPlate"
+              placeholder="AA1234BB"
+              [class.invalid]="submitted && f['carPlate'].errors"
+            />
+            <div class="error-message" *ngIf="submitted && f['carPlate'].errors">
+              Введіть номерний знак
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="carColor">Колір авто *</label>
+            <input 
+              type="text" 
+              id="carColor" 
+              formControlName="carColor"
+              placeholder="Чорний"
+              [class.invalid]="submitted && f['carColor'].errors"
+            />
+            <div class="error-message" *ngIf="submitted && f['carColor'].errors">
+              Введіть колір авто
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="loading">
+          Скасувати
+        </button>
+        <button type="submit" class="btn btn-primary" [disabled]="loading">
+          <span *ngIf="!loading">Подати заявку</span>
+          <span *ngIf="loading">Відправка...</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

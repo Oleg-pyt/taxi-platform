@@ -1,0 +1,150 @@
+<div class="driver-panel">
+  <app-user-menu></app-user-menu>
+
+  <div class="panel-container">
+    <div class="panel-header">
+      <h1>Панель водія</h1>
+      <div class="online-toggle">
+        <label class="toggle-switch">
+          <input type="checkbox" [(ngModel)]="isOnline" (change)="toggleOnline()" />
+          <span class="toggle-slider"></span>
+        </label>
+        <span class="toggle-label" [class.online]="isOnline">
+          {{ isOnline ? 'В мережі' : 'Не в мережі' }}
+        </span>
+      </div>
+    </div>
+
+    <div class="alert alert-error" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </div>
+
+    <!-- Активна поїздка -->
+    <div class="current-ride-section" *ngIf="currentRide">
+      <h2>Активна поїздка</h2>
+      <div class="ride-card active">
+        <div class="ride-info">
+          <div class="ride-header">
+            <div class="passenger-info">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+              </svg>
+              <span>{{ currentRide.passengerName }}</span>
+            </div>
+            <div class="ride-status" [attr.data-status]="currentRide.status">
+              {{ getRideStatusText(currentRide.status) }}
+            </div>
+          </div>
+
+          <div class="ride-locations">
+            <div class="location">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4caf50" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+              </svg>
+              <span>{{ currentRide.pickupLocation.address }}</span>
+            </div>
+            <div class="location">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f44336" stroke-width="2">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+              <span>{{ currentRide.dropoffLocation.address }}</span>
+            </div>
+          </div>
+
+          <div class="ride-details">
+            <div class="detail">
+              <span class="label">Відстань:</span>
+              <span class="value">{{ currentRide.distance }} км</span>
+            </div>
+            <div class="detail">
+              <span class="label">Вартість:</span>
+              <span class="value">{{ currentRide.price }} грн</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="ride-actions">
+          <button class="btn btn-success" (click)="completeRide()" [disabled]="loading">
+            Завершити поїздку
+          </button>
+          <button class="btn btn-danger" (click)="cancelRide()" [disabled]="loading">
+            Скасувати
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Доступні замовлення -->
+    <div class="available-rides-section" *ngIf="isOnline && !currentRide">
+      <h2>Доступні замовлення</h2>
+      
+      <div class="empty-state" *ngIf="availableRides.length === 0">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <p>Очікуємо на нові замовлення...</p>
+      </div>
+
+      <div class="ride-requests">
+        <div class="ride-card" *ngFor="let ride of availableRides">
+          <div class="ride-info">
+            <div class="ride-header">
+              <div class="passenger-info">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                </svg>
+                <span>{{ ride.passengerName }}</span>
+              </div>
+              <div class="ride-price">{{ ride.price }} грн</div>
+            </div>
+
+            <div class="ride-locations">
+              <div class="location">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4caf50" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                </svg>
+                <span>{{ ride.pickupLocation.address }}</span>
+              </div>
+              <div class="location">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f44336" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                  <circle cx="12" cy="10" r="3"/>
+                </svg>
+                <span>{{ ride.dropoffLocation.address }}</span>
+              </div>
+            </div>
+
+            <div class="ride-details">
+              <div class="detail">
+                <span class="label">Відстань:</span>
+                <span class="value">{{ ride.distance }} км</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="ride-actions">
+            <button class="btn btn-primary" (click)="acceptRide(ride.rideId)">
+              Прийняти
+            </button>
+            <button class="btn btn-secondary" (click)="rejectRide(ride.rideId)">
+              Відхилити
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Не в мережі -->
+    <div class="offline-state" *ngIf="!isOnline && !currentRide">
+      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        <line x1="1" y1="1" x2="23" y2="23"/>
+      </svg>
+      <h3>Ви не в мережі</h3>
+      <p>Увімкніть статус "В мережі" щоб отримувати замовлення</p>
+    </div>
+  </div>
+</div>

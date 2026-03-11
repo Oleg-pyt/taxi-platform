@@ -1,0 +1,97 @@
+<div class="ride-history-container">
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Завантаження історії поїздок...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="isEmpty && !isLoading">
+    <div class="empty-icon">
+      <span>📋</span>
+    </div>
+    <h3 class="empty-title">Історія поїздок пуста</h3>
+    <p class="empty-description">
+      Вас ще немає завершених поїздок. Замовте поїздку, щоб почати!
+    </p>
+    <button class="btn btn-primary" (click)="closeDialog()">
+      Замовити поїздку
+    </button>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-state" *ngIf="error && !isLoading">
+    <div class="error-icon">
+      <span>⚠️</span>
+    </div>
+    <h3 class="error-title">Помилка завантаження</h3>
+    <p class="error-message">{{ error }}</p>
+    <button class="btn btn-primary" (click)="retry()">
+      Спробувати знову
+    </button>
+  </div>
+
+  <!-- Ride List -->
+  <div class="rides-list" *ngIf="!isEmpty && !isLoading && rides.length > 0">
+    <div class="rides-header">
+      <h3>Моя історія поїздок</h3>
+      <span class="rides-count">{{ rides.length }}</span>
+    </div>
+
+    <div class="ride-item" *ngFor="let ride of rides; trackBy: trackByRideId">
+      <div class="ride-header">
+        <div class="ride-routes">
+          <div class="route-point from">
+            <span class="route-marker">📍</span>
+            <span class="route-address" [title]="ride.pickupAddress || ride.pickupLocation.address">
+              {{ (ride.pickupAddress || ride.pickupLocation.address || 'Невідомо') | slice: 0: 30 }}{{ (ride.pickupAddress || ride.pickupLocation.address || '').length > 30 ? '...' : '' }}
+            </span>
+          </div>
+          <div class="route-connector"></div>
+          <div class="route-point to">
+            <span class="route-marker">🎯</span>
+            <span class="route-address" [title]="ride.dropoffAddress || ride.dropoffLocation.address">
+              {{ (ride.dropoffAddress || ride.dropoffLocation.address || 'Невідомо') | slice: 0: 30 }}{{ (ride.dropoffAddress || ride.dropoffLocation.address || '').length > 30 ? '...' : '' }}
+            </span>
+          </div>
+        </div>
+        <div class="ride-status" [ngClass]="getRideStatusClass(ride.status)">
+          {{ getRideStatusLabel(ride.status) }}
+        </div>
+      </div>
+
+      <div class="ride-details">
+        <div class="detail-group">
+          <div class="detail-item">
+            <span class="detail-label">Дистанція:</span>
+            <span class="detail-value">{{ ride.distance }}км</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Час:</span>
+            <span class="detail-value">{{ ride.durationMinutes }}хв</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Вартість:</span>
+            <span class="detail-price">{{ ride.price | number }}₴</span>
+          </div>
+        </div>
+
+        <div class="ride-meta">
+          <div class="meta-item" *ngIf="ride.driverName">
+            <span class="meta-label">Водій:</span>
+            <span class="meta-value">{{ ride.driverName }}</span>
+          </div>
+          <div class="meta-item" *ngIf="ride.completedAt">
+            <span class="meta-label">Дата:</span>
+            <span class="meta-value">{{ ride.completedAt | date: 'dd.MM.yyyy HH:mm' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Close Button -->
+  <div class="dialog-footer">
+    <button class="btn btn-secondary" (click)="closeDialog()">Закрити</button>
+  </div>
+</div>

@@ -1,0 +1,176 @@
+<div class="profile-dialog-container">
+  <!-- User Info Section -->
+  <div class="profile-section" *ngIf="user">
+    <div class="profile-header">
+      <div class="profile-avatar">
+        <span class="avatar-icon">👤</span>
+      </div>
+      <div class="profile-basic-info">
+        <h2 class="user-name">{{ user?.name }}</h2>
+        <div class="user-roles">
+          <span class="user-role" *ngFor="let role of user?.roles" [ngClass]="'role-' + (role | lowercase)">
+            {{ getRoleLabel(role) }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-details">
+      <div class="detail-item">
+        <span class="detail-label">Email:</span>
+        <span class="detail-value">{{ user?.email }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Телефон:</span>
+        <span class="detail-value">{{ user?.phone || 'Не вказано' }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Член з:</span>
+        <span class="detail-value">{{ user?.createdAt | date: 'dd.MM.yyyy' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Driver-Specific Info -->
+  <div class="profile-section driver-section" *ngIf="isDriver && user?.driverProfile">
+    <h3 class="section-title">📋 Інформація водія</h3>
+    
+    <div class="driver-stats">
+      <div class="stat-card">
+        <span class="stat-value">{{ user.driverProfile.ratingAverage }}</span>
+        <span class="stat-label">Рейтинг</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value">{{ user.driverProfile.totalRidesCompleted }}</span>
+        <span class="stat-label">Поїздок</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value" [ngClass]="getStatusBadgeClass(user.driverProfile.isVerified)">
+          {{ user.driverProfile.isVerified ? '✓' : '✕' }}
+        </span>
+        <span class="stat-label">Верифіковано</span>
+      </div>
+    </div>
+
+    <!-- License Info -->
+    <div class="info-block">
+      <h4 class="block-title">Водійське посвідчення</h4>
+      <div class="detail-item">
+        <span class="detail-label">Номер:</span>
+        <span class="detail-value">{{ user.driverProfile.licenseNumber }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Дійсне до:</span>
+        <span class="detail-value">{{ user.driverProfile.licenseExpiresAt | date: 'dd.MM.yyyy' }}</span>
+      </div>
+    </div>
+
+    <!-- Vehicle Info -->
+    <div class="info-block" *ngIf="user.driverProfile.vehicle">
+      <h4 class="block-title">🚗 Автомобіль</h4>
+      <div class="vehicle-card">
+        <div class="vehicle-header">
+          <span class="vehicle-make-model">
+            {{ user.driverProfile.vehicle.make }} {{ user.driverProfile.vehicle.model }}
+          </span>
+          <span class="vehicle-year">{{ user.driverProfile.vehicle.year }}</span>
+        </div>
+        <div class="vehicle-details">
+          <div class="detail-item">
+            <span class="detail-label">Колір:</span>
+            <span class="detail-value">{{ user.driverProfile.vehicle.color }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Номерний знак:</span>
+            <span class="detail-value license-plate">{{ user.driverProfile.vehicle.licensePlate }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Місць:</span>
+            <span class="detail-value">{{ user.driverProfile.vehicle.seatsAvailable }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Password Change Section -->
+  <div class="profile-section">
+    <button class="toggle-btn" (click)="togglePasswordForm()">
+      <span class="toggle-icon">{{ showPasswordForm ? '▼' : '▶' }}</span>
+      Змінити пароль
+    </button>
+
+    <div class="password-form-container" *ngIf="showPasswordForm">
+      <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
+        <div class="form-group">
+          <label for="currentPassword">Поточний пароль:</label>
+          <input
+            type="password"
+            id="currentPassword"
+            formControlName="currentPassword"
+            placeholder="Введіть поточний пароль"
+            class="form-control"
+          />
+          <span class="error" *ngIf="passwordForm.get('currentPassword')?.hasError('required')">
+            Поле обов'язкове
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label for="newPassword">Новий пароль:</label>
+          <input
+            type="password"
+            id="newPassword"
+            formControlName="newPassword"
+            placeholder="Не менше 8 символів"
+            class="form-control"
+          />
+          <span class="error" *ngIf="passwordForm.get('newPassword')?.hasError('minlength')">
+            Не менше 8 символів
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label for="confirmPassword">Підтвердіть пароль:</label>
+          <input
+            type="password"
+            id="confirmPassword"
+            formControlName="confirmPassword"
+            placeholder="Повторіть новий пароль"
+            class="form-control"
+          />
+          <span class="error" *ngIf="passwordForm.hasError('passwordMismatch')">
+            Паролі не співпадають
+          </span>
+        </div>
+
+        <div class="form-actions">
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="passwordForm.invalid || passwordChangeLoading"
+          >
+            {{ passwordChangeLoading ? 'Збереження...' : 'Змінити' }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="togglePasswordForm()"
+            [disabled]="passwordChangeLoading"
+          >
+            Скасувати
+          </button>
+        </div>
+
+        <div class="message" *ngIf="passwordChangeMessage" [ngClass]="'message-' + passwordChangeMessage.type">
+          {{ passwordChangeMessage.text }}
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Close Button -->
+  <div class="dialog-actions">
+    <button class="btn btn-secondary" (click)="closeDialog()">Закрити</button>
+  </div>
+</div>

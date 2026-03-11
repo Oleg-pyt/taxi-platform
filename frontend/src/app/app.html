@@ -1,5 +1,19 @@
-<div style="display:flex; justify-content:center; align-items:center; height:100vh; font-size:2rem;">
-  Platform is running
-</div>
+<div class="app-container">
+  <!-- Header with auth info (hidden on map page) -->
+  <div *ngIf="(isAuthenticated$ | async) && (shouldShowHeader$ | async)" class="app-header">
+    <div class="header-left">
+      <h1 class="header-title">🚕 Taxi Platform</h1>
+    </div>
+    <div class="header-right">
+      <div class="user-info" *ngIf="currentUser$ | async as user">
+        <span class="user-name">{{ user?.name }}</span>
+        <button class="profile-btn" (click)="openProfile()" title="Профіль">
+          <span class="profile-icon">👤</span>
+        </button>
+        <button (click)="logout()" class="logout-btn">Вихід</button>
+      </div>
+    </div>
+  </div>
 
-<!--<router-outlet />-->
+  <router-outlet></router-outlet>
+</div>

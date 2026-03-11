@@ -1,0 +1,153 @@
+<div class="map-container-wrapper">
+  <app-user-menu *ngIf="isAuthenticated && !isAuthDialogOpen"></app-user-menu>
+
+  <!-- Map -->
+  <div #mapContainer class="map-container"></div>
+
+  <!-- Login Button (for non-authenticated users) -->
+  <button class="login-btn" *ngIf="!isAuthenticated && !activeRide && !isAuthDialogOpen" (click)="openLoginDialog()">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M13.8 12H3"/>
+    </svg>
+    <span>Увійти</span>
+  </button>
+
+  <button class="ride-draft-btn" *ngIf="!activeRide && !isBottomSheetOpen && !isAuthDialogOpen" (click)="isBottomSheetOpen = true">
+    {{ isAuthenticated ? 'Замовити поїздку' : 'Почати замовлення' }}
+  </button>
+
+  <!-- Active Ride Status -->
+  <div class="active-ride-status" *ngIf="activeRide && rideStatus && !isAuthDialogOpen">
+    <div class="status-header">
+      <div class="status-icon" [attr.data-status]="rideStatus">
+        <div class="pulse"></div>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="1" y="3" width="15" height="13"/>
+          <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+          <circle cx="5.5" cy="18.5" r="2.5"/>
+          <circle cx="18.5" cy="18.5" r="2.5"/>
+        </svg>
+      </div>
+      <div class="status-text">
+        <h3>{{ getRideStatusText(rideStatus) }}</h3>
+        <p *ngIf="activeRide.driverName">Водій: {{ activeRide.driverName }}</p>
+      </div>
+    </div>
+
+    <button class="cancel-ride-btn" (click)="cancelRide()" *ngIf="rideStatus === 'CREATED' || rideStatus === 'OFFERED'">
+      Скасувати
+    </button>
+  </div>
+
+  <!-- Bottom Sheet -->
+  <div class="bottom-sheet" [class.open]="isBottomSheetOpen && !activeRide" *ngIf="!isAuthDialogOpen">
+    <div class="bottom-sheet-header">
+      <div class="drag-handle"></div>
+      <h2>Замовлення поїздки</h2>
+      <button class="close-btn" (click)="closeBottomSheet()">✕</button>
+    </div>
+
+    <div class="bottom-sheet-content">
+      <form [formGroup]="rideForm" (ngSubmit)="onOrderRide()" class="ride-form">
+        <!-- Pickup -->
+        <div class="form-group">
+          <label for="pickup">Звідки</label>
+          <div class="input-group">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4caf50" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+            </svg>
+            <input
+              id="pickup"
+              type="text"
+              formControlName="pickupAddress"
+              readonly
+              placeholder="Виберіть місце посадки"
+              class="location-input"
+              (click)="selectPickupLocation()"
+            />
+          </div>
+        </div>
+
+        <!-- Dropoff -->
+        <div class="form-group">
+          <label for="dropoff">Куди</label>
+          <div class="input-group">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f44336" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+            <input
+              id="dropoff"
+              type="text"
+              formControlName="dropoffAddress"
+              readonly
+              placeholder="Виберіть місце висадки"
+              class="location-input"
+              (click)="selectDropoffLocation()"
+            />
+          </div>
+        </div>
+
+        <!-- Ride info -->
+        <div class="ride-info" *ngIf="estimatedPrice > 0">
+          <div class="info-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+            </svg>
+            <span>{{ estimatedDistance }} км</span>
+          </div>
+          <div class="info-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+            <span>~{{ estimatedTime }} хв</span>
+          </div>
+          <div class="info-item price">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="1" x2="12" y2="23"/>
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+            </svg>
+            <span>{{ estimatedPrice }} грн</span>
+          </div>
+        </div>
+
+        <!-- Selection Mode Info -->
+        <div class="selection-info" *ngIf="selectionMode">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          <span>Виберіть точку на карті</span>
+        </div>
+
+        <!-- Error -->
+        <div class="error-message" *ngIf="locationError">
+          ⚠️ {{ locationError }}
+        </div>
+
+        <!-- Actions -->
+        <div class="form-actions">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="resetForm()"
+          >
+            Очистити
+          </button>
+
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="!canSubmitOrder()"
+          >
+            <span *ngIf="!isCreatingRide && isAuthenticated">Замовити</span>
+            <span *ngIf="!isCreatingRide && !isAuthenticated">Продовжити та увійти</span>
+            <span *ngIf="isCreatingRide">Пошук водія...</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

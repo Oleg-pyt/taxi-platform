@@ -1,0 +1,90 @@
+<div class="ride-completion">
+  <div class="container">
+    <!-- Успішне завершення -->
+    <div class="completion-card" *ngIf="submitted">
+      <div class="success-icon">✓</div>
+      <h2>Дякуємо!</h2>
+      <p>Ваша оцінка збережена</p>
+      <p class="redirect-msg">Повертаємо вас до доступних замовлень...</p>
+    </div>
+
+    <!-- Форма оцінки -->
+    <div class="completion-card" *ngIf="!submitted">
+      <div class="card-header">
+        <h2>Оцініть пасажира</h2>
+        <p class="passenger-name">{{ passengerName }}</p>
+      </div>
+
+      <!-- Інформація про пасажира -->
+      <div class="passenger-info">
+        <div class="info-row">
+          <span class="label">Рейтинг пасажира:</span>
+          <span class="rating-stars">
+            <span *ngFor="let i of getStarArray()" class="star" [class.filled]="i <= passengerRating">⭐</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Помилка -->
+      <div class="error-message" *ngIf="error">
+        ⚠️ {{ error }}
+      </div>
+
+      <!-- Форма оцінки -->
+      <div class="rating-section">
+        <label class="rating-label">Ваша оцінка:</label>
+        <div class="star-rating">
+          <span 
+            *ngFor="let i of getStarArray()"
+            class="star"
+            [class.active]="i <= (hoverRating || rating)"
+            [class.filled]="i <= rating"
+            (click)="setRating(i)"
+            (mouseenter)="setHoverRating(i)"
+            (mouseleave)="clearHoverRating()"
+          >
+            ⭐
+          </span>
+        </div>
+        <div class="rating-text">
+          {{ rating > 0 ? rating + ' ' + (rating === 1 ? 'зірка' : rating < 5 ? 'зірки' : 'зірок') : 'Виберіть оцінку' }}
+        </div>
+      </div>
+
+      <!-- Відгук -->
+      <div class="review-section">
+        <label for="review">Коментар (необов'язково):</label>
+        <textarea 
+          id="review"
+          [(ngModel)]="review"
+          placeholder="Поділіться своїм враженням від поїздки..."
+          class="review-input"
+          [disabled]="loading"
+        ></textarea>
+      </div>
+
+      <!-- Кнопки -->
+      <div class="action-buttons">
+        <button 
+          class="submit-btn"
+          (click)="submitRating()"
+          [disabled]="loading || rating === 0"
+        >
+          {{ loading ? '⏳ Обработка...' : '✓ Надати оцінку' }}
+        </button>
+        <button 
+          class="skip-btn"
+          (click)="skip()"
+          [disabled]="loading"
+        >
+          Пропустити
+        </button>
+      </div>
+
+      <!-- Навантаження -->
+      <div class="loading-overlay" *ngIf="loading">
+        <div class="spinner"></div>
+      </div>
+    </div>
+  </div>
+</div>

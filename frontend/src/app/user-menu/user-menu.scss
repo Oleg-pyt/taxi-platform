@@ -1,0 +1,181 @@
+.user-menu {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+
+  .menu-button {
+    background: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+
+    &:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    &.active {
+      background: #f5f5f5;
+    }
+
+    .menu-icon {
+      color: #333;
+    }
+  }
+
+  .user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 16px;
+
+    &.large {
+      width: 60px;
+      height: 60px;
+      font-size: 24px;
+    }
+  }
+
+  .menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 999;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .menu-panel {
+    position: fixed;
+    top: 0;
+    left: -350px;
+    width: 350px;
+    height: 100vh;
+    background: white;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+    transition: left 0.3s ease;
+    z-index: 1001;
+    overflow-y: auto;
+
+    &.open {
+      left: 0;
+    }
+
+    .menu-header {
+      padding: 30px 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+
+      &.guest {
+        text-align: center;
+      }
+
+      display: flex;
+      align-items: center;
+      gap: 15px;
+
+      .user-info {
+        flex: 1;
+
+        h3 {
+          margin: 0;
+          font-size: 18px;
+          font-weight: 600;
+        }
+
+        p {
+          margin: 5px 0 0 0;
+          font-size: 14px;
+          opacity: 0.9;
+        }
+      }
+    }
+
+    .menu-divider {
+      height: 1px;
+      background: #e0e0e0;
+      margin: 10px 0;
+    }
+
+    .menu-items {
+      padding: 10px 0;
+
+      .menu-item {
+        width: 100%;
+        padding: 15px 20px;
+        border: none;
+        background: none;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        cursor: pointer;
+        transition: background 0.2s ease;
+        color: #333;
+        font-size: 16px;
+        text-align: left;
+
+        &:hover {
+          background: #f5f5f5;
+        }
+
+        &.pending {
+          cursor: default;
+          color: #ff9800;
+
+          &:hover {
+            background: none;
+          }
+        }
+
+        &.admin {
+          color: #9c27b0;
+          font-weight: 500;
+
+          &:hover {
+            background: #f3e5f5;
+          }
+        }
+
+        &.logout {
+          color: #f44336;
+
+          &:hover {
+            background: #ffebee;
+          }
+        }
+
+        svg {
+          flex-shrink: 0;
+        }
+
+        span {
+          flex: 1;
+        }
+      }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

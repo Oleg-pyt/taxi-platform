@@ -1,0 +1,267 @@
+.driver-panel {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding: 20px;
+
+  .panel-container {
+    max-width: 1000px;
+    margin: 80px auto 0;
+  }
+
+  .panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    background: white;
+    padding: 20px 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      color: #333;
+    }
+
+    .online-toggle {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+
+      .toggle-switch {
+        position: relative;
+        width: 60px;
+        height: 30px;
+
+        input {
+          display: none;
+
+          &:checked + .toggle-slider {
+            background: #4caf50;
+
+            &:before {
+              transform: translateX(30px);
+            }
+          }
+        }
+
+        .toggle-slider {
+          position: absolute;
+          cursor: pointer;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: #ccc;
+          border-radius: 30px;
+          transition: 0.3s;
+
+          &:before {
+            content: '';
+            position: absolute;
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background: white;
+            border-radius: 50%;
+            transition: 0.3s;
+          }
+        }
+      }
+
+      .toggle-label {
+        font-weight: 500;
+        color: #666;
+
+        &.online {
+          color: #4caf50;
+        }
+      }
+    }
+  }
+
+  .alert {
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+  }
+
+  .current-ride-section,
+  .available-rides-section {
+    margin-bottom: 30px;
+
+    h2 {
+      font-size: 20px;
+      color: #333;
+      margin-bottom: 15px;
+    }
+  }
+
+  .ride-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+    &.active {
+      border: 2px solid #4caf50;
+    }
+
+    .ride-info {
+      margin-bottom: 20px;
+
+      .ride-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+
+        .passenger-info {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          font-size: 18px;
+          font-weight: 600;
+        }
+
+        .ride-status {
+          padding: 5px 15px;
+          border-radius: 20px;
+          font-size: 14px;
+          font-weight: 500;
+
+          &[data-status="ACCEPTED"] {
+            background: #fff3cd;
+            color: #856404;
+          }
+
+          &[data-status="IN_PROGRESS"] {
+            background: #d1ecf1;
+            color: #0c5460;
+          }
+        }
+
+        .ride-price {
+          font-size: 20px;
+          font-weight: 700;
+          color: #4caf50;
+        }
+      }
+
+      .ride-locations {
+        margin: 15px 0;
+
+        .location {
+          display: flex;
+          align-items: flex-start;
+          gap: 10px;
+          margin-bottom: 10px;
+          color: #666;
+        }
+      }
+
+      .ride-details {
+        display: flex;
+        gap: 30px;
+        margin-top: 15px;
+
+        .detail {
+          .label {
+            color: #999;
+            margin-right: 5px;
+          }
+
+          .value {
+            color: #333;
+            font-weight: 600;
+          }
+        }
+      }
+    }
+
+    .ride-actions {
+      display: flex;
+      gap: 10px;
+
+      .btn {
+        flex: 1;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+
+        &.btn-primary {
+          background: #667eea;
+          color: white;
+
+          &:hover:not(:disabled) {
+            background: #5568d3;
+          }
+        }
+
+        &.btn-secondary {
+          background: #f5f5f5;
+          color: #333;
+
+          &:hover:not(:disabled) {
+            background: #e0e0e0;
+          }
+        }
+
+        &.btn-success {
+          background: #4caf50;
+          color: white;
+
+          &:hover:not(:disabled) {
+            background: #45a049;
+          }
+        }
+
+        &.btn-danger {
+          background: #f44336;
+          color: white;
+
+          &:hover:not(:disabled) {
+            background: #da190b;
+          }
+        }
+      }
+    }
+  }
+
+  .empty-state,
+  .offline-state {
+    text-align: center;
+    padding: 60px 20px;
+    background: white;
+    border-radius: 12px;
+
+    svg {
+      color: #ccc;
+      margin-bottom: 20px;
+    }
+
+    h3 {
+      margin: 0 0 10px 0;
+      color: #333;
+    }
+
+    p {
+      margin: 0;
+      color: #666;
+    }
+  }
+}

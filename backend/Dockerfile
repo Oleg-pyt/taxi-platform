@@ -1,9 +1,9 @@
 # Build backend
 FROM eclipse-temurin:25-jdk-jammy AS build
 
-
-# working directory
 WORKDIR /app
+
+COPY --from=api /root/.m2 /root/.m2
 
 COPY pom.xml .
 COPY mvnw .

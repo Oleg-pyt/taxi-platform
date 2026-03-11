@@ -1,0 +1,23 @@
+<p-dialog header="New Ride" [(visible)]="visible" [modal]="true" [closable]="true">
+    <div class="p-fluid">
+        <div class="p-field">
+            <label>Passenger</label>
+            <input pInputText [(ngModel)]="ride.passenger" />
+        </div>
+        <div class="p-field">
+            <label>Driver</label>
+            <input pInputText [(ngModel)]="ride.driver" />
+        </div>
+        <div class="p-field">
+            <label>From</label>
+            <input pInputText [(ngModel)]="ride.from" />
+        </div>
+        <div class="p-field">
+            <label>To</label>
+            <input pInputText [(ngModel)]="ride.to" />
+        </div>
+    </div>
+    <p-footer>
+        <button pButton label="Save" (click)="saveRide()"></button>
+    </p-footer>
+</p-dialog>

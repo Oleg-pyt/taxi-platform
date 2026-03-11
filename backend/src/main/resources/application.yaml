@@ -10,14 +10,19 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: none
       show-sql: true
 
   flyway:
     enabled: true
     locations: classpath:db/migration
 
-  logging:
-    level:
-      root: INFO
-      org.springframework: WARN
+logging:
+  level:
+    root: INFO
+    org.springframework: WARN
+    org.flywaydb: DEBUG
+
+server:
+  servlet:
+    context-path: /api
