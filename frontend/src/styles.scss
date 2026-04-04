@@ -8,6 +8,16 @@
 // Mapbox GL styles (CSS imports are still supported in Dart Sass)
 @import "mapbox-gl/dist/mapbox-gl.css";
 
+// Global font variables
+:root {
+  --font-primary: 'Montserrat SemiBold', 'Montserrat', sans-serif;
+  --font-secondary: 'Inter', sans-serif;
+  --color-primary: #FA8112;
+  --color-secondary: #FFFFFF;
+  --color-main: #222222;
+  --color-background: #FAF3E1;
+}
+
 // Custom global styles
 ::-webkit-scrollbar {
   width: 8px;

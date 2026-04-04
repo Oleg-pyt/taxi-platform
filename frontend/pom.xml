@@ -16,13 +16,12 @@
         <generated.java.dir>${project.build.directory}/generated-sources/java</generated.java.dir>
         <generated.api.sources.dir>${generated.java.dir}/src/main/java</generated.api.sources.dir>
         <generated.api.classes.dir>${project.build.directory}/generated-api-classes</generated.api.classes.dir>
-        <generated.ts.dir>${project.basedir}/api</generated.ts.dir>
+        <generated.ts.dir>${project.basedir}/dist/api</generated.ts.dir>
         <frontend.dist.dir>${project.basedir}/dist/frontend</frontend.dist.dir>
         <api.groupId>com.benatti</api.groupId>
         <api.artifactId>api</api.artifactId>
         <api.version>1.0.0</api.version>
         <api.npm.artifactId>api-npm</api.npm.artifactId>
-        <api.output.path>api</api.output.path>
     </properties>
 
 

@@ -1,9 +1,7 @@
-import { Component, OnInit, Optional } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { DynamicDialogConfig, DynamicDialogRef, DialogService } from 'primeng/dynamicdialog';
-import { RegisterComponent } from '../register/register';
-import { ForgotPasswordComponent } from '../forgot-password/forgot-password';
+import { DialogService } from 'primeng/dynamicdialog';
 import { AuthService } from '../auth.service';
 
 @Component({
@@ -17,36 +15,23 @@ export class LoginComponent implements OnInit {
   loading = false;
   submitted = false;
   errorMessage: string | null = null;
-  isDialogMode = false;
-  continueOrderAfterLogin = false;
 
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private router: Router,
     private dialogService: DialogService,
-    @Optional() private dialogRef: DynamicDialogRef | null,
-    @Optional() private dialogConfig: DynamicDialogConfig | null
-  ) {}
+  ) { }
 
-  ngOnInit(): void {
-    this.isDialogMode = !!this.dialogConfig?.data?.asDialog;
-    this.continueOrderAfterLogin = !!this.dialogConfig?.data?.continueOrder;
+  public ngOnInit(): void {
     this.initializeForm();
-  }
-
-  private initializeForm(): void {
-    this.loginForm = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
-    });
   }
 
   get f() {
     return this.loginForm.controls;
   }
 
-  onSubmit(): void {
+  public onSubmit(): void {
     this.submitted = true;
     this.errorMessage = null;
 
@@ -61,137 +46,37 @@ export class LoginComponent implements OnInit {
       password: this.f['password'].value
     }).subscribe({
       next: () => {
-        if (this.isDialogMode) {
-          this.dialogRef?.close({
-            authenticated: true,
-            continueOrder: this.continueOrderAfterLogin
-          });
-          return;
-        }
-        this.router.navigate(['/map']);
+        this.router.navigate(['/order']);
       },
       error: (error) => {
-        this.errorMessage = error.message || 'Помилка при вході. Перевірте дані.';
+        this.errorMessage = error.message || 'Error during login. Please check your credentials.';
         this.loading = false;
       }
     });
   }
 
-  loginWithGoogle(): void {
+  public loginWithGoogle(): void {
     console.log('Google login not yet implemented');
-    this.errorMessage = 'Google вхід ще не готовий';
+    this.errorMessage = 'Google login not yet implemented';
   }
 
-  loginWithFacebook(): void {
+  public loginWithFacebook(): void {
     console.log('Facebook login not yet implemented');
-    this.errorMessage = 'Facebook вхід ще не готовий';
+    this.errorMessage = 'Facebook login not yet implemented';
   }
 
-  openRegister(): void {
-    if (this.isDialogMode) {
-      const currentRef = this.dialogRef;
-      const registerRef = this.dialogService.open(RegisterComponent, {
-        showHeader: false,
-        width: '520px',
-        modal: true,
-        closable: false,
-        dismissableMask: false,
-        draggable: false,
-        styleClass: 'auth-dialog',
-        maskStyleClass: 'auth-dialog-mask',
-        contentStyle: { overflow: 'hidden' },
-        data: {
-          asDialog: true,
-          continueOrder: this.continueOrderAfterLogin
-        }
-      });
-      if (!registerRef) {
-        return;
-      }
-
-      setTimeout(() => currentRef?.close(), 0);
-
-      registerRef.onClose.subscribe((result?: { authenticated?: boolean; continueOrder?: boolean }) => {
-        if (!result?.authenticated) {
-          this.dialogService.open(LoginComponent, {
-            showHeader: false,
-            width: '460px',
-            modal: true,
-            closable: false,
-            dismissableMask: false,
-            draggable: false,
-            styleClass: 'auth-dialog',
-            maskStyleClass: 'auth-dialog-mask',
-            contentStyle: { overflow: 'hidden' },
-            data: {
-              asDialog: true,
-              continueOrder: this.continueOrderAfterLogin
-            }
-          });
-        }
-      });
-      return;
-    }
-
-    this.router.navigate(['/register']);
+  public openRegister(): void {
+    this.router.navigate(['/auth/register']);
   }
 
-  openForgotPassword(): void {
-    if (this.isDialogMode) {
-      const currentRef = this.dialogRef;
-      const forgotRef = this.dialogService.open(ForgotPasswordComponent, {
-        showHeader: false,
-        width: '460px',
-        modal: true,
-        closable: false,
-        dismissableMask: false,
-        draggable: false,
-        styleClass: 'auth-dialog',
-        maskStyleClass: 'auth-dialog-mask',
-        contentStyle: { overflow: 'hidden' },
-        data: {
-          asDialog: true,
-          continueOrder: this.continueOrderAfterLogin
-        }
-      });
+  public openForgotPassword(): void {
+    this.router.navigate(['/auth/forgot-password']);
+  }
 
-      setTimeout(() => currentRef?.close(), 0);
-
-      forgotRef?.onClose.subscribe((result?: { backToLogin?: boolean }) => {
-        if (result?.backToLogin !== false) {
-          this.dialogService.open(LoginComponent, {
-            showHeader: false,
-            width: '460px',
-            modal: true,
-            closable: false,
-            dismissableMask: false,
-            draggable: false,
-            styleClass: 'auth-dialog',
-            maskStyleClass: 'auth-dialog-mask',
-            contentStyle: { overflow: 'hidden' },
-            data: {
-              asDialog: true,
-              continueOrder: this.continueOrderAfterLogin
-            }
-          });
-        }
-      });
-      return;
-    }
-
-    this.dialogService.open(ForgotPasswordComponent, {
-      showHeader: false,
-      width: '460px',
-      modal: true,
-      closable: false,
-      dismissableMask: false,
-      draggable: false,
-      styleClass: 'auth-dialog',
-      maskStyleClass: 'auth-dialog-mask',
-      contentStyle: { overflow: 'hidden' },
-      data: { asDialog: true, continueOrder: false }
+  private initializeForm(): void {
+    this.loginForm = this.formBuilder.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
-
 }
-

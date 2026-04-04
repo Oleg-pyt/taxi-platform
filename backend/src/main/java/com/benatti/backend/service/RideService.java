@@ -5,9 +5,9 @@ import com.benatti.backend.entity.UserEntity;
 import com.benatti.backend.repository.RideRepository;
 import com.benatti.backend.repository.UserRepository;
 import com.benatti.backend.websocket.RideRealtimePublisher;
-import com.benatti.taxiapp.model.RideCreateRequest;
-import com.benatti.taxiapp.model.RideStatus;
-import com.benatti.taxiapp.model.UserRole;
+import com.benatti.api.model.RideCreateRequest;
+import com.benatti.api.model.RideStatus;
+import com.benatti.api.model.UserRole;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -43,15 +43,18 @@ public class RideService {
                 request.getPickupLocation().getLng(),
                 request.getDropoffLocation().getLat(),
                 request.getDropoffLocation().getLng());
-        ride.setPickupAddress(request.getPickupLocation().getAddress());
-        ride.setDropoffAddress(request.getDropoffLocation().getAddress());
-        ride.setEstimatedPrice(request.getPrice());
-        ride.setDistance(request.getDistance());
-        ride.setEstimatedTime(request.getEstimatedTime());
+        // todo: add cartype, estimated price, etc
         RideEntity saved = rideRepository.save(ride);
         realtimePublisher.publishDriverRideRequest(saved);
         return saved;
     }
+
+    public RideEntity getActiveRideForRider(UUID riderId) {
+        return rideRepository.findFirstByRiderIdAndStatusInOrderByCreatedAtDesc(riderId, ACTIVE_STATUSES)
+                .orElse(null);
+    }
+
+    // old
 
     public RideEntity getActiveRide(UUID userId) {
         return rideRepository.findFirstByRiderIdAndStatusInOrderByCreatedAtDesc(userId, ACTIVE_STATUSES)

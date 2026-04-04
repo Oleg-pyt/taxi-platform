@@ -1,80 +1,49 @@
 import { inject } from '@angular/core';
-import { Router, CanActivateFn, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { CanActivateFn, CanMatchFn, Router, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
-import { AuthService, UserRole } from './auth.service';
+import { map } from 'rxjs/operators';
+import { AuthService } from './auth.service';
 
-/**
- * Guard для захисту маршрутів, які потребують аутентифікації
- */
-export const authGuard: CanActivateFn = (
-  route: ActivatedRouteSnapshot,
-  state: RouterStateSnapshot
-): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree => {
+type GuardResult = Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree;
+
+function redirectToLogin(router: Router): UrlTree {
+  return router.parseUrl('/auth/login');
+}
+
+function redirectToOrder(router: Router): UrlTree {
+  return router.parseUrl('/order');
+}
+
+function requireAuthenticatedUser(): GuardResult {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  // Перевіряємо чи токен валідний (включаючи термін дії)
-  if (authService.hasValidToken()) {
-    return true;
-  }
-
-  // Якщо користувач не аутентифікований, перенаправити на сторінку входу
-  router.navigate(['/login']);
-  return false;
-};
-
-/**
- * Guard для захисту публічних маршрутів від аутентифікованих користувачів
- */
-export const publicGuard: CanActivateFn = (
-  route: ActivatedRouteSnapshot,
-  state: RouterStateSnapshot
-): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree => {
-  const authService = inject(AuthService);
-  const router = inject(Router);
-
-  // Перевіряємо чи токен валідний
   if (!authService.hasValidToken()) {
-    return true;
+    authService.clearSession();
+    return redirectToLogin(router);
   }
 
-  // Якщо користувач аутентифікований, перенаправити на map
-  router.navigate(['/map']);
-  return false;
-};
+  return authService.ensureSessionLoaded().pipe(
+    map((ok) => (ok && authService.hasValidToken() ? true : redirectToLogin(router)))
+  );
+}
 
-/**
- * Guard для водіїв
- */
-export const driverGuard: CanActivateFn = (
-  route: ActivatedRouteSnapshot,
-  state: RouterStateSnapshot
-): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree => {
+function allowGuestsOnly(): GuardResult {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  if (authService.hasValidToken() && authService.isDriver()) {
+  if (!authService.hasValidToken()) {
+    authService.clearSession();
     return true;
   }
 
-  router.navigate(['/map']);
-  return false;
-};
+  return authService.ensureSessionLoaded().pipe(
+    map((ok) => (ok && authService.hasValidToken() ? redirectToOrder(router) : true))
+  );
+}
 
-/**
- * Guard для адміністраторів
- */
-export const adminGuard: CanActivateFn = (
-  route: ActivatedRouteSnapshot,
-  state: RouterStateSnapshot
-): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree => {
-  const authService = inject(AuthService);
-  const router = inject(Router);
+export const authGuard: CanActivateFn = () => requireAuthenticatedUser();
 
-  if (authService.hasValidToken() && authService.isAdmin()) {
-    return true;
-  }
+export const authEntryGuard: CanMatchFn = () => allowGuestsOnly();
 
-  router.navigate(['/map']);
-  return false;
-};
+export const publicGuard: CanActivateFn = () => allowGuestsOnly();

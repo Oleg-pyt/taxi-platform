@@ -5,13 +5,13 @@ import com.benatti.backend.entity.RideEntity;
 import com.benatti.backend.entity.UserEntity;
 import com.benatti.backend.service.RideService;
 import com.benatti.backend.repository.UserRepository;
-import com.benatti.taxiapp.api.RidesApi;
-import com.benatti.taxiapp.model.ActiveRideResponse;
-import com.benatti.taxiapp.model.MessageResponse;
-import com.benatti.taxiapp.model.Ride;
-import com.benatti.taxiapp.model.RideAvailable;
-import com.benatti.taxiapp.model.RideCreateRequest;
-import com.benatti.taxiapp.model.RideStatus;
+import com.benatti.api.RidesApi;
+import com.benatti.api.model.ActiveRideResponse;
+import com.benatti.api.model.MessageResponse;
+import com.benatti.api.model.Ride;
+import com.benatti.api.model.RideAvailable;
+import com.benatti.api.model.RideCreateRequest;
+import com.benatti.api.model.RideStatus;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -115,11 +115,6 @@ public class RESTRideService implements RidesApi {
                 .map(ride -> rideDTOAssembler.toRideAvailable(ride, getUserName(ride.getRiderId())))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(rides);
-    }
-
-    @Override
-    public ResponseEntity<Void> connectRidesWebSocket(String token) {
-        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/rides/{rideId}")

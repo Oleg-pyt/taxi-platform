@@ -1,0 +1,22 @@
+<map
+    [selectionMode]="selectionMode"
+    [roadMarkers]="roadMarkers"
+    [additionalMarkers]="additionalMarkers"
+    (onMapClick)="onMapClick($event)" 
+    (onUserLocationChange)="onAddPoint($event)"
+>
+    @if (orderStep === 'ride') {
+        <order-ride
+            [roadMarkersMap]="roadMarkersMap"
+            [isMapPickMode]="selectionMode != null"
+            (mapPickRequested)="onMapPickRequested($event)"
+            (onAddPoint)="onAddPoint($event)"
+        />
+    }
+    @if (orderStep === 'select-car') {
+        <select-car />
+    }
+    @if (orderStep === 'active-ride') {
+        <active-ride />
+    }
+</map>

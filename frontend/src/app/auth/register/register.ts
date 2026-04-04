@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors }
 import { Router } from '@angular/router';
 import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AuthService } from '../auth.service';
-import { LoginComponent } from '../login/login';
 
 @Component({
   selector: 'app-register',
@@ -28,67 +27,19 @@ export class RegisterComponent implements OnInit {
     private dialogService: DialogService,
     @Optional() private dialogRef: DynamicDialogRef | null,
     @Optional() private dialogConfig: DynamicDialogConfig | null
-  ) {}
+  ) { }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.isDialogMode = !!this.dialogConfig?.data?.asDialog;
     this.continueOrderAfterRegister = !!this.dialogConfig?.data?.continueOrder;
     this.initializeForm();
-  }
-
-  private initializeForm(): void {
-    this.registerForm = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.email]],
-      name: ['', [Validators.required, Validators.minLength(2)]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', Validators.required]
-    }, {
-      validators: this.passwordMatchValidator
-    });
-  }
-
-  private passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
-    const password = control.get('password')?.value;
-    const confirmPassword = control.get('confirmPassword')?.value;
-
-    if (!password || !confirmPassword) {
-      return null;
-    }
-
-    return password === confirmPassword ? null : { passwordMismatch: true };
   }
 
   get f() {
     return this.registerForm.controls;
   }
 
-  checkPasswordStrength(): void {
-    const password = this.f['password'].value;
-    let strength = 0;
-
-    if (password.length >= 6) strength++;
-    if (password.length >= 10) strength++;
-    if (/[A-Z]/.test(password)) strength++;
-    if (/[0-9]/.test(password)) strength++;
-    if (/[!@#$%^&*]/.test(password)) strength++;
-
-    this.passwordStrength = (strength / 5) * 100;
-  }
-
-  getPasswordStrengthText(): string {
-    if (this.passwordStrength === 0) return '';
-    if (this.passwordStrength < 40) return 'Слабкий';
-    if (this.passwordStrength < 70) return 'Середній';
-    return 'Сильний';
-  }
-
-  getPasswordStrengthColor(): string {
-    if (this.passwordStrength < 40) return 'bg-red-500';
-    if (this.passwordStrength < 70) return 'bg-yellow-500';
-    return 'bg-green-500';
-  }
-
-  onSubmit(): void {
+  public onSubmit(): void {
     this.submitted = true;
     this.errorMessage = null;
     this.successMessage = null;
@@ -113,55 +64,51 @@ export class RegisterComponent implements OnInit {
           return;
         }
 
-        this.successMessage = 'Реєстрація успішна! Перенаправлення на dashboard...';
+        this.successMessage = 'Registration successful! Redirecting...';
         setTimeout(() => {
           this.router.navigate(['/dashboard']);
         }, 2000);
       },
       error: (error) => {
-        this.errorMessage = error.message || 'Помилка при реєстрації. Спробуйте ще раз.';
+        this.errorMessage = error.message || 'Error during registration. Please try again.';
         this.loading = false;
       }
     });
   }
 
-  registerWithGoogle(): void {
+  public registerWithGoogle(): void {
     console.log('Google registration not yet implemented');
-    this.errorMessage = 'Google реєстрація ще не готова';
+    this.errorMessage = 'Google registration not yet implemented';
   }
 
-  registerWithFacebook(): void {
+  public registerWithFacebook(): void {
     console.log('Facebook registration not yet implemented');
-    this.errorMessage = 'Facebook реєстрація ще не готова';
+    this.errorMessage = 'Facebook registration not yet implemented';
   }
 
-  openLogin(): void {
-    if (this.isDialogMode) {
-      const currentRef = this.dialogRef;
-      const loginRef = this.dialogService.open(LoginComponent, {
-        showHeader: false,
-        width: '460px',
-        modal: true,
-        closable: false,
-        dismissableMask: false,
-        draggable: false,
-        styleClass: 'auth-dialog',
-        maskStyleClass: 'auth-dialog-mask',
-        contentStyle: { overflow: 'hidden' },
-        data: {
-          asDialog: true,
-          continueOrder: this.continueOrderAfterRegister
-        }
-      });
-      if (!loginRef) {
-        return;
-      }
+  public openLogin(): void {
+    this.router.navigate(['/auth/login']);
+  }
 
-      setTimeout(() => currentRef?.close(), 0);
-      return;
+  private initializeForm(): void {
+    this.registerForm = this.formBuilder.group({
+      email: ['', [Validators.required, Validators.email]],
+      name: ['', [Validators.required, Validators.minLength(2)]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      confirmPassword: ['', Validators.required]
+    }, {
+      validators: this.passwordMatchValidator
+    });
+  }
+
+  private passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+    const password = control.get('password')?.value;
+    const confirmPassword = control.get('confirmPassword')?.value;
+
+    if (!password || !confirmPassword) {
+      return null;
     }
 
-    this.router.navigate(['/login']);
+    return password === confirmPassword ? null : { passwordMismatch: true };
   }
-
 }

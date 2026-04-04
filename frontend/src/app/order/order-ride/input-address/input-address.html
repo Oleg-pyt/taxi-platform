@@ -1,0 +1,31 @@
+<div class="input-address">
+	<label class="field-label" *ngIf="label">{{ label }}</label>
+
+	<div class="input-wrap">
+		<input type="text" class="location-input" [value]="value" [placeholder]="placeholder" [disabled]="disabled"
+			autocomplete="off" (input)="onInputChange($any($event.target).value)"
+			(focus)="onInputChange($any($event.target).value)" (blur)="clearSuggestions()" />
+
+		<ul class="suggestions" *ngIf="suggestions.length > 0">
+			<li *ngFor="let suggestion of suggestions" (mousedown)="onSelectSuggestion(suggestion)">
+				{{ suggestion.placeName }}
+			</li>
+		</ul>
+
+		<button type="button" class="map-pick-btn" [disabled]="disabled" (click)="onMapPickClick()">
+			<svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<g opacity="0.4">
+					<path
+						d="M18.8796 13.0964C19.4697 11.7182 19.791 10.2508 19.791 8.86908C19.791 5.12124 16.5264 2.08301 12.4993 2.08301C8.47227 2.08301 5.20768 5.12124 5.20768 8.86908C5.20768 12.5876 7.53497 16.9267 11.1659 18.4784C12.0124 18.8401 12.9863 18.8401 13.8328 18.4784C14.9924 17.9828 16.0191 17.2029 16.8795 16.2497"
+						stroke="#222222" stroke-width="1.5625" stroke-linecap="round" />
+					<path
+						d="M10.4173 9.37533C10.4173 10.526 11.35 11.4587 12.5007 11.4587C13.6513 11.4587 14.584 10.526 14.584 9.37533C14.584 8.22473 13.6513 7.29199 12.5007 7.29199C11.35 7.29199 10.4173 8.22473 10.4173 9.37533Z"
+						stroke="#222222" stroke-width="1.5625" />
+					<path
+						d="M3.16549 16.1455C2.47237 16.7731 2.08268 17.4805 2.08268 18.2288C2.08268 19.1925 2.72883 20.0882 3.83675 20.833M21.8332 16.1455C22.5263 16.7731 22.916 17.4805 22.916 18.2288C22.916 20.8177 18.2523 22.9163 12.4993 22.9163C10.7776 22.9163 9.15331 22.7283 7.72247 22.3955"
+						stroke="#222222" stroke-width="1.5625" stroke-linecap="round" />
+				</g>
+			</svg>
+		</button>
+	</div>
+</div>

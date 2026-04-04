@@ -2,7 +2,7 @@ package com.benatti.backend.config;
 
 import com.benatti.backend.entity.UserEntity;
 import com.benatti.backend.repository.UserRepository;
-import com.benatti.taxiapp.model.UserRole;
+import com.benatti.api.model.UserRole;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,0 +1,20 @@
+<div class="order-card">
+    <div class="order-header">
+        <h2 class="order-title">Taxi Platform</h2>
+    </div>
+
+    <form [formGroup]="rideForm" (ngSubmit)="submitOrder()" class="ride-form" [hidden]="isMapPickMode">
+        <input-address [point]="getValue(PointType.PICKUP_POINT)" (valueChange)="addressSelected($event, PointType.PICKUP_POINT)"
+            (mapPickRequested)="onMapPickRequested(PointType.PICKUP_POINT)" [label]="'From:'" />
+        <input-address [point]="getValue(PointType.DROPOFF_POINT)" (valueChange)="addressSelected($event, PointType.DROPOFF_POINT)"
+            (mapPickRequested)="onMapPickRequested(PointType.DROPOFF_POINT)" [label]="'To:'"
+            [placeholder]="'where to go?'" />
+
+        <button type="submit" class="btn-submit" [disabled]="!canSubmitOrder()">Confirm</button>
+    </form>
+    @if (isMapPickMode) {
+        <div class="selection-info">
+            Map pick mode is active
+        </div>
+    }
+</div>

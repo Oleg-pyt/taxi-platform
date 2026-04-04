@@ -1,6 +1,6 @@
 package com.benatti.backend.websocket;
 
-import com.benatti.taxiapp.model.UserRole;
+import com.benatti.api.model.UserRole;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
 

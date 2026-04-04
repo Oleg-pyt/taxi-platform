@@ -1,7 +1,7 @@
 package com.benatti.backend.security.service;
 
 import com.benatti.backend.entity.UserEntity;
-import com.benatti.taxiapp.model.UserRole;
+import com.benatti.api.model.UserRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

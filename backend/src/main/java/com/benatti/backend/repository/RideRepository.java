@@ -1,7 +1,7 @@
 package com.benatti.backend.repository;
 
 import com.benatti.backend.entity.RideEntity;
-import com.benatti.taxiapp.model.RideStatus;
+import com.benatti.api.model.RideStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

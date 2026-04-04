@@ -5,9 +5,9 @@ import com.benatti.backend.entity.UserEntity;
 import com.benatti.backend.repository.UserRepository;
 import com.benatti.backend.service.IAuthService;
 import com.benatti.backend.security.service.JwtService;
-import com.benatti.taxiapp.model.AuthResponse;
-import com.benatti.taxiapp.model.UserLoginRequest;
-import com.benatti.taxiapp.model.UserRegistrationRequest;
+import com.benatti.api.model.AuthResponse;
+import com.benatti.api.model.UserLoginRequest;
+import com.benatti.api.model.UserRegistrationRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

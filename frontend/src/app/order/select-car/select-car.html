@@ -1,0 +1,47 @@
+<div class="select-car-card">
+    <div class="sc-header">
+        <button class="back-btn" type="button" (click)="onBack()">
+            <img src="/icons/icon-arrow-back.svg" alt="Back" width="24" height="24">
+        </button>
+        <h2 class="sc-title">Taxi Platform</h2>
+    </div>
+    <h2 class="sc-sub-title">Select car type:</h2>
+    <div class="car-options">
+        @for (option of carOptions; track option.type) {
+            <car-item
+                [option]="option"
+                [selectedType]="selectedType"
+                (onSelectCar)="selectCar($event)"
+            />
+        }
+    </div>
+    <div class="payment-section">
+        <h3 class="payment-title">Payment method:</h3>
+        <div class="payment-options">
+            <button
+                class="payment-option"
+                [class.payment-option--selected]="selectedPayment === 'card'"
+                type="button"
+                (click)="selectPayment('card')">
+                <img src="/icons/icon-card.svg" alt="Card" width="24" height="24" class="payment-option__icon">
+                <span>Card</span>
+            </button>
+            <button
+                class="payment-option"
+                [class.payment-option--selected]="selectedPayment === 'cash'"
+                type="button"
+                (click)="selectPayment('cash')">
+                <img src="/icons/icon-cash.svg" alt="Cash" width="24" height="24" class="payment-option__icon">
+                <span>Cash</span>
+            </button>
+        </div>
+    </div>
+
+    <button
+        class="btn-submit"
+        type="button"
+        (click)="confirmSelection()"
+        [disabled]="!selectedType || !selectedPayment">
+        Confirm
+    </button>
+</div>

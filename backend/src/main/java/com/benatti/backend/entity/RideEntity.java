@@ -15,7 +15,7 @@ import org.hibernate.annotations.UuidGenerator;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import com.benatti.taxiapp.model.RideStatus;
+import com.benatti.api.model.RideStatus;
 
 @Entity
 @Table(name = "rides")

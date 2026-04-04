@@ -1,0 +1,53 @@
+<div class="active-ride-card">
+    @if (connectionError) {
+        <div class="status-note">
+            {{ connectionError }}
+        </div>
+    }
+
+    <div class="ar-header">
+        <div>
+            <h2 class="ar-title">Active ride</h2>
+            <p class="ar-subtitle">Route is locked, tracking updates from the live ride stream.</p>
+        </div>
+        <span class="ar-badge" [class.ar-badge--searching]="isSearching">
+            {{ statusLabel }}
+        </span>
+    </div>
+
+    @if (isSearching) {
+        <div class="status-panel">
+            <div class="status-spinner"></div>
+            <div>
+                <h3 class="status-title">Looking for a driver</h3>
+                <p class="status-copy">We are sending your request to nearby drivers and waiting for acceptance.</p>
+            </div>
+        </div>
+    }
+
+    @if (!isSearching) {
+        <div class="driver-panel">
+            <div class="driver-panel__meta">
+                <span class="driver-panel__label">Driver</span>
+                <strong class="driver-panel__value">{{ driverName || 'Assigning...' }}</strong>
+            </div>
+            <div class="driver-panel__meta">
+                <span class="driver-panel__label">Phone</span>
+                <strong class="driver-panel__value">{{ driverPhone || 'Not shared yet' }}</strong>
+            </div>
+        </div>
+
+        @if (etaMinutes !== null) {
+            <div class="eta-panel">
+                <span class="eta-panel__label">ETA to pickup</span>
+                <strong class="eta-panel__value">{{ etaMinutes }} min</strong>
+            </div>
+        }
+
+        @if (statusMessage) {
+            <div class="status-note">
+                {{ statusMessage }}
+            </div>
+        }
+    }
+</div>

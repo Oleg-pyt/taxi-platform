@@ -5,18 +5,12 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class LocationService {
-
-  constructor() {}
-
-  getCurrentLocation(): Observable<GeolocationPosition> {
-    return new Observable(observer => {
+  public getCurrentLocation(): Promise<GeolocationPosition> {
+    return new Promise((resolve, reject) => {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
-          position => {
-            observer.next(position);
-            observer.complete();
-          },
-          error => observer.error(error),
+          position => resolve(position),
+          error => reject(error),
           {
             enableHighAccuracy: true,
             timeout: 10000,
@@ -24,12 +18,12 @@ export class LocationService {
           }
         );
       } else {
-        observer.error('Geolocation not supported');
+        reject('Geolocation not supported');
       }
     });
   }
 
-  getOldUserLocation(): [number, number] {
+  public getOldUserLocation(): [number, number] {
     // Бидгощ за замовчуванням
     return [18.0084, 53.1235];
   }

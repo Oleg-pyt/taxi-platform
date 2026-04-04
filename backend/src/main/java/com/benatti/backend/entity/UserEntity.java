@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import com.benatti.taxiapp.model.UserRole;
+import com.benatti.api.model.UserRole;
 
 @Entity
 @Table(name = "users")

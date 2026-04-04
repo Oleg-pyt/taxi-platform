@@ -1,0 +1,47 @@
+<div class="ride-search-container">
+    @if (!currentRide) {
+        <div class="searching">
+            <div class="spinner"></div>
+            <p>Searching for new order...</p>
+        </div>
+    }
+    @else {
+        <div class="ride-offer">
+            <div class="ride-header">
+                <h2>New Ride Offer</h2>
+                <!-- <span class="price">${{ currentRide.price }}</span> -->
+            </div>
+
+            <div class="ride-details">
+                <div class="detail-item">
+                    <span class="label">Passenger:</span>
+                    <span class="value">{{ currentRide.passengerName }}</span>
+                </div>
+
+                <div class="detail-item">
+                    <span class="label">Distance:</span>
+                    <span class="value">{{ currentRide.distance.toFixed(1) }} km</span>
+                </div>
+
+                <!-- <div class="ride-locations">
+                    <div class="location">
+                        <span class="location-label">From:</span>
+                        <p class="coords">{{ currentRide.pickupLocation.lat.toFixed(4) }}, {{ currentRide.pickupLocation.lng.toFixed(4) }}</p>
+                    </div>
+
+                    <div class="arrow">→</div>
+
+                    <div class="location">
+                        <span class="location-label">To:</span>
+                        <p class="coords">{{ currentRide.dropoffLocation.lat.toFixed(4) }}, {{ currentRide.dropoffLocation.lng.toFixed(4) }}</p>
+                    </div>
+                </div> -->
+            </div>
+
+            <div class="ride-actions">
+                <button class="btn btn-reject" (click)="rejectRide()">Reject</button>
+                <button class="btn btn-accept" (click)="acceptRide()">Accept</button>
+            </div>
+        </div>
+    }
+</div>

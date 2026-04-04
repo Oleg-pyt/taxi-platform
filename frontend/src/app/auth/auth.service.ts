@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { tap, catchError, map } from 'rxjs/operators';
-import { Router } from '@angular/router';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
+import { tap, catchError, map, finalize, shareReplay } from 'rxjs/operators';
 import { environment } from '../../environments/environments';
 import { UsersService as ApiUsersService } from '@benatti/api';
 
@@ -70,20 +69,17 @@ export interface DriverApplicationRequest {
 export class AuthService {
   private apiUrl = environment.apiUrl + '/users';
   private tokenKey = 'authToken';
-  private userKey = 'currentUser';
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.hasValidToken());
   public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
+  private sessionHydration$?: Observable<boolean>;
 
   constructor(
     private http: HttpClient,
-    private router: Router,
     private apiUsersService: ApiUsersService
-  ) {
-    this.loadUserFromStorage();
-  }
+  ) {}
 
   /**
    * Реєстрація нового користувача
@@ -154,7 +150,6 @@ export class AuthService {
       map((user) => this.toUser(user)),
       tap(user => {
         this.currentUserSubject.next(user);
-        localStorage.setItem(this.userKey, JSON.stringify(user));
       }),
       catchError(this.handleError)
     );
@@ -198,10 +193,60 @@ export class AuthService {
    */
   logout(): void {
     localStorage.removeItem(this.tokenKey);
-    localStorage.removeItem(this.userKey);
     this.currentUserSubject.next(null);
     this.isAuthenticatedSubject.next(false);
-    this.router.navigate(['/map']);
+    window.location.replace('/auth/login');
+  }
+
+  logoutAndReload(): void {
+    this.clearSessionState();
+    window.location.href = '/auth/login';
+  }
+
+  clearSession(): void {
+    this.clearSessionState();
+  }
+
+  ensureSessionLoaded(): Observable<boolean> {
+    const token = this.getToken();
+    if (!token) {
+      this.clearSessionState();
+      return of(true);
+    }
+
+    if (!this.isTokenValid()) {
+      this.clearSessionState();
+      return of(false);
+    }
+
+    const currentUser = this.currentUserSubject.value;
+    if (currentUser) {
+      this.isAuthenticatedSubject.next(true);
+      return of(true);
+    }
+
+    if (this.sessionHydration$) {
+      return this.sessionHydration$;
+    }
+
+    this.isAuthenticatedSubject.next(true);
+    this.sessionHydration$ = this.apiUsersService.getCurrentUser().pipe(
+      map((user) => this.toUser(user)),
+      tap((user) => {
+        this.currentUserSubject.next(user);
+      }),
+      map(() => true),
+      catchError(() => {
+        this.clearSessionState();
+        return of(false);
+      }),
+      finalize(() => {
+        this.sessionHydration$ = undefined;
+      }),
+      shareReplay(1)
+    );
+
+    return this.sessionHydration$;
   }
 
   /**
@@ -271,25 +316,14 @@ export class AuthService {
    */
   private handleAuthSuccess(response: AuthResponse): void {
     localStorage.setItem(this.tokenKey, response.token);
-    localStorage.setItem(this.userKey, JSON.stringify(response.user));
     this.currentUserSubject.next(response.user);
     this.isAuthenticatedSubject.next(true);
   }
 
-  /**
-   * Завантаження користувача з локального сховища
-   */
-  private loadUserFromStorage(): void {
-    const userJson = localStorage.getItem(this.userKey);
-    if (userJson && this.hasValidToken()) {
-      try {
-        const user = JSON.parse(userJson) as User;
-        this.currentUserSubject.next(user);
-      } catch (error) {
-        console.error('Error parsing user from storage:', error);
-        localStorage.removeItem(this.userKey);
-      }
-    }
+  private clearSessionState(): void {
+    localStorage.removeItem(this.tokenKey);
+    this.currentUserSubject.next(null);
+    this.isAuthenticatedSubject.next(false);
   }
 
   /**

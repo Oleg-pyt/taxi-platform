@@ -3,15 +3,14 @@ package com.benatti.backend.websocket;
 import com.benatti.backend.entity.RideEntity;
 import com.benatti.backend.entity.UserEntity;
 import com.benatti.backend.repository.UserRepository;
-import com.benatti.taxiapp.model.Coordinates;
-import com.benatti.taxiapp.model.DriverRideRequestWsEvent;
-import com.benatti.taxiapp.model.DriverRideRequestWsEventData;
-import com.benatti.taxiapp.model.Location;
-import com.benatti.taxiapp.model.RideUpdateWsEvent;
-import com.benatti.taxiapp.model.RideUpdateWsEventData;
+import com.benatti.api.model.Coordinates;
+import com.benatti.api.model.DriverRideRequestWsEvent;
+import com.benatti.api.model.DriverRideRequestWsEventData;
+import com.benatti.api.model.Location;
+import com.benatti.api.model.RideUpdateWsEvent;
+import com.benatti.api.model.RideUpdateWsEventData;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -63,11 +62,11 @@ public class RideRealtimePublisher {
         data.setRideId(ride.getId());
         data.setStatus(ride.getStatus());
         if (ride.getDriverId() != null) {
-            data.setDriverId(JsonNullable.of(ride.getDriverId()));
-            data.setDriverName(JsonNullable.of(getUserName(ride.getDriverId())));
+            data.setDriverId(ride.getDriverId());
+            data.setDriverName(getUserName(ride.getDriverId()));
             UserEntity driver = userRepository.findById(ride.getDriverId()).orElse(null);
             if (driver != null && driver.getPhone() != null) {
-                data.setDriverPhone(JsonNullable.of(driver.getPhone()));
+                data.setDriverPhone(driver.getPhone());
             }
             Coordinates location = driverLocations.get(ride.getDriverId());
             if (location != null) {
@@ -75,7 +74,7 @@ public class RideRealtimePublisher {
             }
         }
         if (message != null) {
-            data.setMessage(JsonNullable.of(message));
+            data.setMessage(message);
         }
         event.setData(data);
 
@@ -91,7 +90,7 @@ public class RideRealtimePublisher {
             RideUpdateWsEvent event = new RideUpdateWsEvent();
             event.setType(RideUpdateWsEvent.TypeEnum.RIDE_UPDATE);
             RideUpdateWsEventData data = new RideUpdateWsEventData();
-            data.setDriverId(JsonNullable.of(driverId));
+            data.setDriverId(driverId);
             data.setDriverLocation(coordinates);
             event.setData(data);
             sendToUser(ridePassengerId, event);
@@ -108,7 +107,6 @@ public class RideRealtimePublisher {
         Location location = new Location();
         location.setLat(lat);
         location.setLng(lng);
-        location.setAddress(address);
         return location;
     }
 

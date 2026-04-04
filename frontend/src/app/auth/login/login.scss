@@ -1,40 +1,170 @@
-// Login component styles
 :host {
   display: block;
-  min-height: 100vh;
 }
 
-// Optional: Add custom animations
 @keyframes slideIn {
   from {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-.login-container {
+.login-card {
+  width: 400px;
+  padding: 30px;
+  border-radius: 24px;
+  background: var(--color-background);
+  box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.8);
   animation: slideIn 0.3s ease-out;
 }
 
-// Custom input styling
-input {
-  transition: all 0.3s ease;
+.login-card--dialog {
+  max-width: none;
+  padding: 16px;
+  box-shadow: none;
+}
 
-  &:focus {
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+.login-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.login-title {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 100%;
+  color: var(--color-primary);
+}
+
+.error-box {
+  margin-bottom: 16px;
+  padding: 16px;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  background: #fef2f2;
+}
+
+.error-text {
+  margin: 0;
+  color: #b91c1c;
+  font-size: 14px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field-error {
+  margin-top: 8px;
+  color: #dc2626;
+  font-size: 14px;
+}
+
+.forgot-password {
+  text-align: right;
+}
+
+.link-action {
+  color: var(--color-primary);
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+
+  &:hover {
+    color: #1d4ed8;
   }
 }
 
-// Button hover effects
-button {
-  transition: all 0.3s ease;
+.link-action--small {
+  font-size: 14px;
+}
+
+.submit-button {
+  width: 100%;
+  padding: 14px 16px;
+  border: none;
+  border-radius: 12px;
+  background: var(--color-primary);
+  color: var(--color-secondary);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 
   &:not(:disabled):hover {
+    background: #1d4ed8;
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.social-section {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.social-label-wrap {
+  display: flex;
+  justify-content: center;
+}
+
+.social-label {
+  font-size: 16px;
+  font-weight: 600;
+  font-family: var(--font-secondary);
+  color: var(--color-main);
+}
+
+.social-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+}
+
+.social-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.social-icon {
+  width: 48px;
+  height: 48px;
+}
+
+.social-icon--facebook {
+  color: #2563eb;
+}
+
+.register-section {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.register-text {
+  font-size: 16px;
+  font-weight: 600;
+  font-family: var(--font-secondary);
+  color: var(--color-main);
+  margin: 0;
+  color: #4b5563;
 }

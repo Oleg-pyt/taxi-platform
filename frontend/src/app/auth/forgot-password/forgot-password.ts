@@ -102,7 +102,7 @@ export class ForgotPasswordComponent implements OnInit {
         }
 
         setTimeout(() => {
-          this.router.navigate(['/login']);
+          this.router.navigate(['/auth/login']);
         }, 3000);
       },
       error: (error) => {
@@ -139,7 +139,7 @@ export class ForgotPasswordComponent implements OnInit {
         }
 
         setTimeout(() => {
-          this.router.navigate(['/login']);
+          this.router.navigate(['/auth/login']);
         }, 2000);
       },
       error: (error) => {
@@ -163,6 +163,6 @@ export class ForgotPasswordComponent implements OnInit {
       return;
     }
 
-    this.router.navigate(['/login']);
+    this.router.navigate(['/auth/login']);
   }
 }

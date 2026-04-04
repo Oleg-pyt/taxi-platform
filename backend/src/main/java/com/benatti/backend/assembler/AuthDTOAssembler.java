@@ -1,10 +1,9 @@
 package com.benatti.backend.assembler;
 
 import com.benatti.backend.entity.UserEntity;
-import com.benatti.taxiapp.model.AdminUser;
-import com.benatti.taxiapp.model.UserProfile;
-import com.benatti.taxiapp.model.UserRole;
-import org.openapitools.jackson.nullable.JsonNullable;
+import com.benatti.api.model.AdminUser;
+import com.benatti.api.model.UserProfile;
+import com.benatti.api.model.UserRole;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
@@ -23,13 +22,13 @@ public class AuthDTOAssembler {
         profile.setName(userEntity.getName());
         boolean isDriver = userEntity.getRoles().contains(UserRole.DRIVER);
         profile.setIsDriver(isDriver);
-        profile.setDriverApproved(JsonNullable.of(isDriver));
+        profile.setDriverApproved(isDriver);
         profile.setRoles(new ArrayList<>(userEntity.getRoles()));
         if (userEntity.getPhone() != null) {
-            profile.setPhone(JsonNullable.of(userEntity.getPhone()));
+            profile.setPhone(userEntity.getPhone());
         }
         if (userEntity.getProfilePhoto() != null) {
-            profile.setProfilePhoto(JsonNullable.of(URI.create(userEntity.getProfilePhoto())));
+            profile.setProfilePhoto(URI.create(userEntity.getProfilePhoto()));
         }
         return profile;
     }
@@ -46,7 +45,7 @@ public class AuthDTOAssembler {
         List<UserRole> roles = new ArrayList<>(userEntity.getRoles());
         adminUser.setRoles(roles);
         if (userEntity.getPhone() != null) {
-            adminUser.setPhone(JsonNullable.of(userEntity.getPhone()));
+            adminUser.setPhone(userEntity.getPhone());
         }
         return adminUser;
     }

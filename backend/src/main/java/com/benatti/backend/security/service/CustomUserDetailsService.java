@@ -2,7 +2,7 @@ package com.benatti.backend.security.service;
 
 import com.benatti.backend.entity.UserEntity;
 import com.benatti.backend.repository.UserRepository;
-import com.benatti.taxiapp.model.UserRole;
+import com.benatti.api.model.UserRole;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

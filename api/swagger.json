@@ -1,0 +1,1675 @@
+﻿{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Taxi Platform API",
+    "version": "1.0.0",
+    "description": "Backend API contract for authentication, rides, admin operations."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080/api",
+      "description": "Local development server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "users",
+      "description": "Authentication and user profile operations"
+    },
+    {
+      "name": "rides",
+      "description": "Ride lifecycle operations"
+    },
+    {
+      "name": "admin",
+      "description": "Admin panel operations"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/users/register": {
+      "post": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Register a new user",
+        "operationId": "registerUser",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserRegistrationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User registered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        }
+      }
+    },
+    "/users/login": {
+      "post": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Login user",
+        "operationId": "loginUser",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User logged in successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/users/me": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Get current user profile",
+        "operationId": "getCurrentUser",
+        "responses": {
+          "200": {
+            "description": "Current user profile",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfile"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/users/change-password": {
+      "post": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Change current user password",
+        "operationId": "changePassword",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password changed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/users/apply-driver": {
+      "post": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Submit a driver application",
+        "operationId": "applyDriver",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DriverApplicationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Application submitted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DriverApplicationSubmitResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/users/refresh-token": {
+      "post": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Refresh access token",
+        "operationId": "refreshToken",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokenRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Token refreshed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefreshTokenResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        }
+      }
+    },
+    "/rides": {
+      "post": {
+        "tags": [
+          "rides"
+        ],
+        "summary": "Create a new ride",
+        "operationId": "createRide",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RideCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Ride created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ride"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/rides/calculate-price": {
+      "post": {
+        "tags": [
+          "rides"
+        ],
+        "summary": "Estimate ride price and duration",
+        "operationId": "calculateRidePrice",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PriceCalculationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Price estimation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PriceCalculationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        }
+      }
+    },
+    "/rides/active": {
+      "get": {
+        "tags": [
+          "rides"
+        ],
+        "summary": "Get current active ride",
+        "operationId": "getActiveRide",
+        "responses": {
+          "200": {
+            "description": "Active ride or null",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActiveRideResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/rides/history": {
+      "get": {
+        "tags": [
+          "rides"
+        ],
+        "summary": "Get ride history",
+        "operationId": "getRideHistory",
+        "responses": {
+          "200": {
+            "description": "Ride history",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Ride"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/rides/available": {
+      "get": {
+        "tags": [
+          "rides"
+        ],
+        "summary": "Get available rides for driver",
+        "operationId": "getAvailableRides",
+        "responses": {
+          "200": {
+            "description": "Available rides",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RideAvailable"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/rides/{rideId}/cancel": {
+      "post": {
+        "tags": [
+          "rides"
+        ],
+        "summary": "Cancel ride",
+        "operationId": "cancelRide",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/RideId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ride cancelled",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/rides/{rideId}": {
+      "get": {
+        "tags": [
+          "rides"
+        ],
+        "summary": "Get ride by id",
+        "operationId": "getRideById",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/RideId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ride details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ride"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/rides/{rideId}/status": {
+      "patch": {
+        "tags": [
+          "rides"
+        ],
+        "summary": "Update ride status",
+        "operationId": "updateRideStatus",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/RideId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RideStatusUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ride updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ride"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/rides/{rideId}/accept": {
+      "post": {
+        "tags": [
+          "rides"
+        ],
+        "summary": "Accept ride by driver",
+        "operationId": "acceptRide",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/RideId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ride accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ride"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/rides/{rideId}/complete": {
+      "post": {
+        "tags": [
+          "rides"
+        ],
+        "summary": "Complete ride by driver",
+        "operationId": "completeRide",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/RideId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ride completed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ride"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/admin/driver-applications": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "List driver applications",
+        "operationId": "getDriverApplications",
+        "responses": {
+          "200": {
+            "description": "Driver applications",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DriverApplication"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/admin/driver-applications/{applicationId}/approve": {
+      "post": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Approve driver application",
+        "operationId": "approveDriverApplication",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ApplicationId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Application approved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/admin/driver-applications/{applicationId}/reject": {
+      "post": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Reject driver application",
+        "operationId": "rejectDriverApplication",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ApplicationId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Application rejected",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/admin/users": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "List users",
+        "operationId": "getAdminUsers",
+        "responses": {
+          "200": {
+            "description": "Users list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AdminUser"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/admin/users/{userId}/block": {
+      "post": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Block user",
+        "operationId": "blockUser",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/UserId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User blocked",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/admin/stats": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Get platform stats",
+        "operationId": "getAdminStats",
+        "responses": {
+          "200": {
+            "description": "Platform statistics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminStats"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "parameters": {
+      "RideId": {
+        "name": "rideId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "ApplicationId": {
+        "name": "applicationId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "UserId": {
+        "name": "userId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Bad request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Forbidden",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "InternalServerError": {
+        "description": "Internal server error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "UserRole": {
+        "type": "string",
+        "enum": [
+          "PASSENGER",
+          "DRIVER",
+          "ADMIN"
+        ]
+      },
+      "RideStatus": {
+        "type": "string",
+        "enum": [
+          "CREATED",
+          "OFFERED",
+          "ACCEPTED",
+          "IN_PROGRESS",
+          "COMPLETED",
+          "CANCELLED",
+          "EXPIRED"
+        ]
+      },
+      "UserRegistrationRequest": {
+        "type": "object",
+        "required": [
+          "email",
+          "username",
+          "password"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 6
+          }
+        }
+      },
+      "UserLoginRequest": {
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "UserProfile": {
+        "type": "object",
+        "required": [
+          "id",
+          "email",
+          "name",
+          "roles",
+          "isDriver"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "name": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserRole"
+            }
+          },
+          "isDriver": {
+            "type": "boolean"
+          },
+          "driverApproved": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "profilePhoto": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          }
+        }
+      },
+      "AuthResponse": {
+        "type": "object",
+        "required": [
+          "token",
+          "user"
+        ],
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserProfile"
+          }
+        }
+      },
+      "ChangePasswordRequest": {
+        "type": "object",
+        "required": [
+          "currentPassword",
+          "newPassword"
+        ],
+        "properties": {
+          "currentPassword": {
+            "type": "string"
+          },
+          "newPassword": {
+            "type": "string",
+            "minLength": 6
+          }
+        }
+      },
+      "RefreshTokenRequest": {
+        "type": "object",
+        "required": [
+          "token"
+        ],
+        "properties": {
+          "token": {
+            "type": "string"
+          }
+        }
+      },
+      "RefreshTokenResponse": {
+        "type": "object",
+        "required": [
+          "token"
+        ],
+        "properties": {
+          "token": {
+            "type": "string"
+          }
+        }
+      },
+      "MessageResponse": {
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "DriverApplicationRequest": {
+        "type": "object",
+        "required": [
+          "firstName",
+          "lastName",
+          "phone",
+          "licenseNumber",
+          "carModel",
+          "carYear",
+          "carPlate",
+          "carColor"
+        ],
+        "properties": {
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "licenseNumber": {
+            "type": "string"
+          },
+          "carModel": {
+            "type": "string"
+          },
+          "carYear": {
+            "type": "integer"
+          },
+          "carPlate": {
+            "type": "string"
+          },
+          "carColor": {
+            "type": "string"
+          }
+        }
+      },
+      "DriverApplicationSubmitResponse": {
+        "type": "object",
+        "required": [
+          "message",
+          "applicationId"
+        ],
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "applicationId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "Location": {
+        "type": "object",
+        "required": [
+          "lat",
+          "lng"
+        ],
+        "properties": {
+          "lat": {
+            "type": "number",
+            "format": "double"
+          },
+          "lng": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "CarType": {
+        "type": "string",
+        "enum": [
+          "STANDTART",
+          "BUSINESS",
+          "XL"
+        ]
+      },
+      "Coordinates": {
+        "type": "object",
+        "required": [
+          "lat",
+          "lng"
+        ],
+        "properties": {
+          "lat": {
+            "type": "number",
+            "format": "double"
+          },
+          "lng": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "RideCreateRequest": {
+        "type": "object",
+        "required": [
+          "pickupLocation",
+          "dropoffLocation",
+          "carType"
+        ],
+        "properties": {
+          "pickupLocation": {
+            "$ref": "#/components/schemas/Location"
+          },
+          "dropoffLocation": {
+            "$ref": "#/components/schemas/Location"
+          },
+          "carType": {
+            "$ref": "#/components/schemas/CarType"
+          }
+        }
+      },
+      "RideStatusUpdateRequest": {
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/RideStatus"
+          }
+        }
+      },
+      "PriceCalculationRequest": {
+        "type": "object",
+        "required": [
+          "pickupLocation",
+          "dropoffLocation"
+        ],
+        "properties": {
+          "pickupLocation": {
+            "$ref": "#/components/schemas/Coordinates"
+          },
+          "dropoffLocation": {
+            "$ref": "#/components/schemas/Coordinates"
+          }
+        }
+      },
+      "PriceCalculationResponse": {
+        "type": "object",
+        "required": [
+          "distance",
+          "duration",
+          "price",
+          "currency"
+        ],
+        "properties": {
+          "distance": {
+            "type": "number",
+            "format": "double"
+          },
+          "duration": {
+            "type": "integer"
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "currency": {
+            "type": "string"
+          }
+        }
+      },
+      "Ride": {
+        "type": "object",
+        "required": [
+          "id",
+          "passengerId",
+          "passengerName",
+          "pickupLocation",
+          "dropoffLocation",
+          "status",
+          "price",
+          "distance",
+          "estimatedTime",
+          "createdAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "passengerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "passengerName": {
+            "type": "string"
+          },
+          "driverId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "driverName": {
+            "type": "string",
+            "nullable": true
+          },
+          "pickupLocation": {
+            "$ref": "#/components/schemas/Location"
+          },
+          "dropoffLocation": {
+            "$ref": "#/components/schemas/Location"
+          },
+          "status": {
+            "$ref": "#/components/schemas/RideStatus"
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "distance": {
+            "type": "number",
+            "format": "double"
+          },
+          "estimatedTime": {
+            "type": "integer"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "acceptedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "ActiveRideResponse": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Ride"
+          }
+        ],
+        "nullable": true
+      },
+      "RideAvailable": {
+        "type": "object",
+        "required": [
+          "id",
+          "passengerName",
+          "pickupLocation",
+          "dropoffLocation",
+          "status",
+          "price",
+          "distance"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "passengerName": {
+            "type": "string"
+          },
+          "pickupLocation": {
+            "$ref": "#/components/schemas/Location"
+          },
+          "dropoffLocation": {
+            "$ref": "#/components/schemas/Location"
+          },
+          "status": {
+            "$ref": "#/components/schemas/RideStatus"
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "distance": {
+            "type": "number",
+            "format": "double"
+          },
+          "estimatedTime": {
+            "type": "integer",
+            "nullable": true
+          }
+        }
+      },
+      "DriverApplication": {
+        "type": "object",
+        "required": [
+          "id",
+          "userId",
+          "firstName",
+          "lastName",
+          "phone",
+          "licenseNumber",
+          "carModel",
+          "carYear",
+          "carPlate",
+          "carColor",
+          "status",
+          "createdAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "licenseNumber": {
+            "type": "string"
+          },
+          "carModel": {
+            "type": "string"
+          },
+          "carYear": {
+            "type": "integer"
+          },
+          "carPlate": {
+            "type": "string"
+          },
+          "carColor": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "APPROVED",
+              "REJECTED"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "AdminUser": {
+        "type": "object",
+        "required": [
+          "id",
+          "email",
+          "name",
+          "roles",
+          "isDriver"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "name": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserRole"
+            }
+          },
+          "isDriver": {
+            "type": "boolean"
+          },
+          "driverApproved": {
+            "type": "boolean",
+            "nullable": true
+          }
+        }
+      },
+      "AdminStats": {
+        "type": "object",
+        "required": [
+          "totalRides",
+          "activeRides",
+          "completedRides",
+          "cancelledRides",
+          "totalRevenue"
+        ],
+        "properties": {
+          "totalRides": {
+            "type": "integer"
+          },
+          "activeRides": {
+            "type": "integer"
+          },
+          "completedRides": {
+            "type": "integer"
+          },
+          "cancelledRides": {
+            "type": "integer"
+          },
+          "totalRevenue": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "ValidationError": {
+        "type": "object",
+        "required": [
+          "field",
+          "message"
+        ],
+        "properties": {
+          "field": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            }
+          }
+        }
+      },
+      "RideUpdateWsEvent": {
+        "type": "object",
+        "required": [
+          "type",
+          "data"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "RIDE_UPDATE"
+            ]
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "rideId",
+              "status"
+            ],
+            "properties": {
+              "rideId": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "status": {
+                "$ref": "#/components/schemas/RideStatus"
+              },
+              "driverId": {
+                "type": "string",
+                "format": "uuid",
+                "nullable": true
+              },
+              "driverName": {
+                "type": "string",
+                "nullable": true
+              },
+              "driverPhone": {
+                "type": "string",
+                "nullable": true
+              },
+              "driverLocation": {
+                "$ref": "#/components/schemas/Coordinates"
+              },
+              "estimatedArrival": {
+                "type": "integer",
+                "nullable": true
+              },
+              "message": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          }
+        }
+      },
+      "DriverRideRequestWsEvent": {
+        "type": "object",
+        "required": [
+          "type",
+          "data"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "DRIVER_RIDE_REQUEST"
+            ]
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "rideId",
+              "pickupLocation",
+              "dropoffLocation",
+              "passengerName",
+              "price",
+              "distance"
+            ],
+            "properties": {
+              "rideId": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "pickupLocation": {
+                "$ref": "#/components/schemas/Location"
+              },
+              "dropoffLocation": {
+                "$ref": "#/components/schemas/Location"
+              },
+              "passengerName": {
+                "type": "string"
+              },
+              "price": {
+                "type": "number",
+                "format": "double"
+              },
+              "distance": {
+                "type": "number",
+                "format": "double"
+              }
+            }
+          }
+        }
+      },
+      "AcceptRideWsCommand": {
+        "type": "object",
+        "required": [
+          "type",
+          "data"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "ACCEPT_RIDE"
+            ]
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "rideId"
+            ],
+            "properties": {
+              "rideId": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          }
+        }
+      },
+      "RejectRideWsCommand": {
+        "type": "object",
+        "required": [
+          "type",
+          "data"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "REJECT_RIDE"
+            ]
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "rideId"
+            ],
+            "properties": {
+              "rideId": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          }
+        }
+      },
+      "UpdateLocationWsCommand": {
+        "type": "object",
+        "required": [
+          "type",
+          "data"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "UPDATE_LOCATION"
+            ]
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "location"
+            ],
+            "properties": {
+              "location": {
+                "$ref": "#/components/schemas/Coordinates"
+              }
+            }
+          }
+        }
+      },
+      "CancelRideWsCommand": {
+        "type": "object",
+        "required": [
+          "type",
+          "data"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "CANCEL_RIDE"
+            ]
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "rideId"
+            ],
+            "properties": {
+              "rideId": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

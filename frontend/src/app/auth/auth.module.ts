@@ -7,24 +7,30 @@ import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { LoginComponent } from './login/login';
 import { RegisterComponent } from './register/register';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password';
+import { AuthLayoutComponent } from './auth-layout/auth-layout';
+import { AppCommonModule } from '../common/common.module';
+import { authRoutes } from './auth.routing';
 
 @NgModule({
     declarations: [
         LoginComponent,
         RegisterComponent,
-        ForgotPasswordComponent
+        ForgotPasswordComponent,
+        AuthLayoutComponent
     ],
     imports: [
         CommonModule,
         ReactiveFormsModule,
         FormsModule,
-        RouterModule,
-        DynamicDialogModule
+        RouterModule.forChild(authRoutes),
+        DynamicDialogModule,
+        AppCommonModule
     ],
     exports: [
         LoginComponent,
         RegisterComponent,
-        ForgotPasswordComponent
+        ForgotPasswordComponent,
+        AuthLayoutComponent
     ]
 })
 export class AuthModule { }

@@ -1,11 +1,10 @@
 package com.benatti.backend.assembler;
 
 import com.benatti.backend.entity.RideEntity;
-import com.benatti.taxiapp.model.ActiveRideResponse;
-import com.benatti.taxiapp.model.Location;
-import com.benatti.taxiapp.model.Ride;
-import com.benatti.taxiapp.model.RideAvailable;
-import org.openapitools.jackson.nullable.JsonNullable;
+import com.benatti.api.model.ActiveRideResponse;
+import com.benatti.api.model.Location;
+import com.benatti.api.model.Ride;
+import com.benatti.api.model.RideAvailable;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
@@ -22,10 +21,10 @@ public class RideDTOAssembler {
         ride.setPassengerId(entity.getRiderId());
         ride.setPassengerName(passengerName);
         if (entity.getDriverId() != null) {
-            ride.setDriverId(JsonNullable.of(entity.getDriverId()));
+            ride.setDriverId(entity.getDriverId());
         }
         if (driverName != null) {
-            ride.setDriverName(JsonNullable.of(driverName));
+            ride.setDriverName(driverName);
         }
         ride.setPickupLocation(toLocation(entity.getPickupLat(), entity.getPickupLng(), entity.getPickupAddress()));
         ride.setDropoffLocation(toLocation(entity.getDropoffLat(), entity.getDropoffLng(), entity.getDropoffAddress()));
@@ -35,10 +34,10 @@ public class RideDTOAssembler {
         ride.setEstimatedTime(entity.getEstimatedTime());
         ride.setCreatedAt(toOffset(entity.getCreatedAt()));
         if (entity.getAssignedAt() != null) {
-            ride.setAcceptedAt(JsonNullable.of(toOffset(entity.getAssignedAt())));
+            ride.setAcceptedAt(toOffset(entity.getAssignedAt()));
         }
         if (entity.getCompletedAt() != null) {
-            ride.setCompletedAt(JsonNullable.of(toOffset(entity.getCompletedAt())));
+            ride.setCompletedAt(toOffset(entity.getCompletedAt()));
         }
         return ride;
     }
@@ -52,10 +51,10 @@ public class RideDTOAssembler {
         ride.setPassengerId(entity.getRiderId());
         ride.setPassengerName(passengerName);
         if (entity.getDriverId() != null) {
-            ride.setDriverId(JsonNullable.of(entity.getDriverId()));
+            ride.setDriverId(entity.getDriverId());
         }
         if (driverName != null) {
-            ride.setDriverName(JsonNullable.of(driverName));
+            ride.setDriverName(driverName);
         }
         ride.setPickupLocation(toLocation(entity.getPickupLat(), entity.getPickupLng(), entity.getPickupAddress()));
         ride.setDropoffLocation(toLocation(entity.getDropoffLat(), entity.getDropoffLng(), entity.getDropoffAddress()));
@@ -65,10 +64,10 @@ public class RideDTOAssembler {
         ride.setEstimatedTime(entity.getEstimatedTime());
         ride.setCreatedAt(toOffset(entity.getCreatedAt()));
         if (entity.getAssignedAt() != null) {
-            ride.setAcceptedAt(JsonNullable.of(toOffset(entity.getAssignedAt())));
+            ride.setAcceptedAt(toOffset(entity.getAssignedAt()));
         }
         if (entity.getCompletedAt() != null) {
-            ride.setCompletedAt(JsonNullable.of(toOffset(entity.getCompletedAt())));
+            ride.setCompletedAt(toOffset(entity.getCompletedAt()));
         }
         return ride;
     }
@@ -86,7 +85,7 @@ public class RideDTOAssembler {
         ride.setPrice(entity.getEstimatedPrice());
         ride.setDistance(entity.getDistance());
         if (entity.getEstimatedTime() != null) {
-            ride.setEstimatedTime(JsonNullable.of(entity.getEstimatedTime()));
+            ride.setEstimatedTime(entity.getEstimatedTime());
         }
         return ride;
     }
@@ -95,7 +94,6 @@ public class RideDTOAssembler {
         Location location = new Location();
         location.setLat(lat);
         location.setLng(lng);
-        location.setAddress(address);
         return location;
     }
 

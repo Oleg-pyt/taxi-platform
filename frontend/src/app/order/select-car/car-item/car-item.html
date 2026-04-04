@@ -1,0 +1,19 @@
+<button class="car-option" [class.car-option--selected]="selectedType === option.type" type="button"
+    (click)="selectCar(option.type)">
+
+    <div class="car-option__icon">
+        <img [src]="'/icons/car-' + option.type.toLowerCase() + '.svg'" [alt]="option.label">
+    </div>
+
+    <div class="car-option__body">
+        <span class="car-option__name">{{ option.label }}</span>
+        <span class="car-option__desc">{{ option.description }}</span>
+    </div>
+
+    <div class="car-option__price">
+        ${{ option.price.toFixed(2) }}
+        <!-- <span class="car-option__check" [class.visible]="selectedType === option.type">
+            <img src="/icons/icon-check.svg" alt="selected" width="16" height="16">
+        </span> -->
+    </div>
+</button>

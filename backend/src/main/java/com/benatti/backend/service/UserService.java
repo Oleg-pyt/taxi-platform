@@ -4,9 +4,9 @@ import com.benatti.backend.entity.DriverApplicationEntity;
 import com.benatti.backend.entity.UserEntity;
 import com.benatti.backend.repository.DriverApplicationRepository;
 import com.benatti.backend.repository.UserRepository;
-import com.benatti.taxiapp.model.ChangePasswordRequest;
-import com.benatti.taxiapp.model.DriverApplicationRequest;
-import com.benatti.taxiapp.model.UserRole;
+import com.benatti.api.model.ChangePasswordRequest;
+import com.benatti.api.model.DriverApplicationRequest;
+import com.benatti.api.model.UserRole;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
